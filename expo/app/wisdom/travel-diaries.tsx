@@ -10,8 +10,9 @@ import {
 import { Stack, useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import Colors from "@/constants/colors";
-import { useWisdomPosts } from "@/hooks/useWordPress";
+import { useCategories } from "@/hooks/useWordPress";
 import { CATEGORY_IDS } from "@/services/wordpress";
+import type { WPCategory } from "@/services/wordpress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
 
 const DESTINATIONS = [
@@ -45,11 +46,24 @@ const DESTINATIONS = [
 
 export default function TravelDiariesScreen() {
   const router = useRouter();
-  const { data: wisdomPosts, isLoading, isError, refetch } = useWisdomPosts(100);
+  const {
+    data: categories,
+    isLoading,
+    isError,
+    refetch,
+  } = useCategories();
+
+  const categoryCountMap = React.useMemo(() => {
+    const map = new Map<number, number>();
+    categories?.forEach((cat: WPCategory) => {
+      map.set(cat.id, cat.count ?? 0);
+    });
+    return map;
+  }, [categories]);
 
   const getPostCount = (destinationId: number | string) => {
-    if (!wisdomPosts || typeof destinationId === "string") return undefined;
-    return wisdomPosts.filter((p) => p.categoryIds.includes(destinationId)).length;
+    if (typeof destinationId === "string") return undefined;
+    return categoryCountMap.get(destinationId) ?? 0;
   };
 
   const handlePress = (destination: (typeof DESTINATIONS)[number]) => {

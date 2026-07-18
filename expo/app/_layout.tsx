@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AppState, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -15,6 +15,7 @@ import {
   fetchEventPosts,
   fetchProgramPages,
 } from "@/services/wordpress";
+import { restoreCache, persistCache } from "@/services/queryPersister";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,6 +32,10 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+// Restore the persisted cache once on module load so the first render can
+// use cached data instead of waiting on the slow WordPress API.
+const cacheRestored = restoreCache(queryClient);
 
 function RootLayoutNav() {
   return (
@@ -110,8 +115,22 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
-    SplashScreen.hideAsync();
+    // Wait for the persisted cache to be restored before hiding the splash
+    // screen, so users see content immediately rather than empty loading
+    // states on a cold start.
+    let mounted = true;
+    cacheRestored.finally(() => {
+      if (mounted) {
+        setIsReady(true);
+        SplashScreen.hideAsync();
+      }
+    });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -134,6 +153,15 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
+    // Persist the cache whenever a tracked query updates, so the next launch
+    // can render instantly from storage.
+    const unsubscribe = queryClient
+      .getQueryCache()
+      .subscribe(() => persistCache(queryClient));
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     // Refresh queries when the app returns to the foreground.
     const subscription = AppState.addEventListener("change", (nextAppState) => {
       if (Platform.OS !== "web") {
@@ -146,7 +174,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <RootLayoutNav />
+        {isReady ? <RootLayoutNav /> : null}
       </GestureHandlerRootView>
     </QueryClientProvider>
   );

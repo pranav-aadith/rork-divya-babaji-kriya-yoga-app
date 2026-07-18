@@ -280,13 +280,19 @@ function normalizePage(page: WPPage): Page {
 /**
  * Fetch posts with embedded data.
  * @param params - query parameters (per_page, categories, etc.)
+ * @param includeContent - when false (default), the heavy `content` field is
+ *   omitted from the response, dramatically reducing payload size for list
+ *   screens. Detail screens fetch the full post by id separately.
  */
-export async function fetchPosts(params?: {
-  per_page?: number;
-  categories?: number;
-  search?: string;
-  page?: number;
-}): Promise<Post[]> {
+export async function fetchPosts(
+  params?: {
+    per_page?: number;
+    categories?: number;
+    search?: string;
+    page?: number;
+  },
+  includeContent = false
+): Promise<Post[]> {
   const search = new URLSearchParams();
   search.set("_embed", "true");
   search.set("orderby", "date");
@@ -295,6 +301,14 @@ export async function fetchPosts(params?: {
   if (params?.categories) search.set("categories", String(params.categories));
   if (params?.search) search.set("search", params.search);
   if (params?.page) search.set("page", String(params.page));
+  if (!includeContent) {
+    // Omit `content` from list responses — it's the bulk of the payload and
+    // only needed on detail screens (which fetch by id).
+    search.set(
+      "_fields",
+      "id,date,modified,slug,link,title,excerpt,featured_media,categories,tags,sticky,author,_links,_embedded"
+    );
+  }
 
   const res = await fetch(`${API_BASE}/posts?${search.toString()}`);
   if (!res.ok) throw new Error(`Failed to fetch posts: ${res.status}`);
@@ -445,24 +459,38 @@ export const CATEGORY_IDS = {
  * so users can browse quotes in their preferred language.
  */
 export async function fetchQuotes(perPage = 30): Promise<Post[]> {
+  // Quotes are image-based greeting cards; we need `content` to extract the
+  // greeting image when no featured media is set.
   const categoryPerPage = Math.max(5, Math.ceil(perPage / 4));
   const [english, telugu, hindi, tamil] = await Promise.all([
-    fetchPosts({
-      per_page: categoryPerPage,
-      categories: CATEGORY_IDS.quoteEnglish,
-    }),
-    fetchPosts({
-      per_page: categoryPerPage,
-      categories: CATEGORY_IDS.quoteTelugu,
-    }),
-    fetchPosts({
-      per_page: categoryPerPage,
-      categories: CATEGORY_IDS.quoteHindi,
-    }),
-    fetchPosts({
-      per_page: categoryPerPage,
-      categories: CATEGORY_IDS.quoteTamil,
-    }),
+    fetchPosts(
+      {
+        per_page: categoryPerPage,
+        categories: CATEGORY_IDS.quoteEnglish,
+      },
+      true
+    ),
+    fetchPosts(
+      {
+        per_page: categoryPerPage,
+        categories: CATEGORY_IDS.quoteTelugu,
+      },
+      true
+    ),
+    fetchPosts(
+      {
+        per_page: categoryPerPage,
+        categories: CATEGORY_IDS.quoteHindi,
+      },
+      true
+    ),
+    fetchPosts(
+      {
+        per_page: categoryPerPage,
+        categories: CATEGORY_IDS.quoteTamil,
+      },
+      true
+    ),
   ]);
 
   const byId = new Map<number, Post>();

@@ -14,7 +14,7 @@ import Colors from "@/constants/colors";
 import { usePosts, useQuotes } from "@/hooks/useWordPress";
 import { CATEGORY_IDS } from "@/services/wordpress";
 import { LoadingState, ErrorState, EmptyState } from "@/components/LoadingStates";
-import { estimateReadTime, extractContentImages } from "@/utils/html";
+import { extractContentImages } from "@/utils/html";
 import {
   detectLanguage,
   getLanguageName,
@@ -79,7 +79,10 @@ export default function WisdomCategoryScreen() {
   const postsWithLanguage: PostWithLanguage[] = useMemo(() => {
     if (!posts) return [];
     return posts.map((post) => {
-      const sample = `${post.title} ${post.excerpt} ${post.content}`.slice(0, 200);
+      // Title + excerpt is enough for script detection; category names are
+      // checked first by detectLanguage. Content is no longer fetched for
+      // list views to keep payloads small.
+      const sample = `${post.title} ${post.excerpt}`.slice(0, 200);
       const language = detectLanguage(sample, post.categories);
       return { ...post, language };
     });
@@ -131,6 +134,15 @@ export default function WisdomCategoryScreen() {
     if (contentImgs.length > 0) return contentImgs[0];
     if (post.imageMediumUrl) return post.imageMediumUrl;
     return FALLBACK_IMAGE;
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   };
 
   if (isLoading) {
@@ -272,7 +284,7 @@ export default function WisdomCategoryScreen() {
                   <View style={styles.featuredMeta}>
                     <Clock size={14} color="rgba(255,255,255,0.7)" />
                     <Text style={styles.featuredMetaText}>
-                      {estimateReadTime(featured.content)}
+                      {formatDate(featured.date)}
                     </Text>
                   </View>
                 </View>
@@ -308,7 +320,7 @@ export default function WisdomCategoryScreen() {
                       <View style={styles.articleMeta}>
                         <Clock size={12} color={Colors.light.textLight} />
                         <Text style={styles.articleMetaText}>
-                          {estimateReadTime(article.content)}
+                          {formatDate(article.date)}
                         </Text>
                       </View>
                     </View>
