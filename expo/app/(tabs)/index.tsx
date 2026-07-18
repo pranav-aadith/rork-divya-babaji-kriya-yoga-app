@@ -5,30 +5,18 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  TouchableOpacity,
-  Dimensions,
   Animated,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import { ArrowRight } from "lucide-react-native";
 import Colors from "@/constants/colors";
-import { useQuotes, usePosts } from "@/hooks/useWordPress";
+import { useQuotes } from "@/hooks/useWordPress";
 import { InlineLoading } from "@/components/LoadingStates";
 import type { Post } from "@/services/wordpress";
 
-const { width } = Dimensions.get("window");
-
-/** Placeholder image used when a post/page has no featured image */
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800";
-
 export default function HomeScreen() {
-  const router = useRouter();
   const fadeAnim = useState(new Animated.Value(0))[0];
 
   const { data: quotesData, isLoading: quotesLoading } = useQuotes(5);
-  const { data: postsData } = usePosts({ per_page: 4 });
 
   const [quoteIndex, setQuoteIndex] = useState(0);
 
@@ -48,7 +36,6 @@ export default function HomeScreen() {
   }, [quotesData]);
 
   const currentQuote: Post | undefined = quotesData?.[quoteIndex];
-  const recentPosts: Post[] = postsData ?? [];
 
   return (
     <ScrollView
@@ -125,50 +112,6 @@ export default function HomeScreen() {
           </View>
         )}
       </View>
-
-      {recentPosts.length > 0 && (
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Latest Updates</Text>
-            <TouchableOpacity
-              style={styles.seeAllButton}
-              onPress={() => router.push("/(tabs)/knowledge")}
-            >
-              <Text style={styles.seeAllText}>See All</Text>
-              <ArrowRight size={16} color={Colors.light.primary} />
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.programsScroll}
-          >
-            {recentPosts.slice(0, 4).map((post) => (
-              <TouchableOpacity
-                key={post.id}
-                style={styles.updateCard}
-                onPress={() => router.push(`/article/${post.id}`)}
-                activeOpacity={0.9}
-              >
-                <Image
-                  source={{ uri: post.imageMediumUrl ?? post.imageUrl ?? FALLBACK_IMAGE }}
-                  style={styles.updateImage}
-                />
-                <View style={styles.updateContent}>
-                  {post.categories.length > 0 && (
-                    <Text style={styles.updateCategory}>
-                      {post.categories[0]}
-                    </Text>
-                  )}
-                  <Text style={styles.updateTitle} numberOfLines={3}>
-                    {post.title}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      )}
 
       <View style={styles.bannerSection}>
         <LinearGradient
@@ -305,96 +248,6 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
     textAlign: "center",
     fontWeight: "600" as const,
-  },
-  section: {
-    marginBottom: 28,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "700" as const,
-    color: Colors.light.text,
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
-  seeAllButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  seeAllText: {
-    fontSize: 14,
-    color: Colors.light.primary,
-    fontWeight: "600" as const,
-  },
-  programsScroll: {
-    paddingHorizontal: 20,
-    gap: 16,
-  },
-  quickActions: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    gap: 12,
-  },
-  quickActionCard: {
-    flex: 1,
-    alignItems: "center",
-  },
-  quickActionGradient: {
-    width: 64,
-    height: 64,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
-  },
-  quickActionEmoji: {
-    fontSize: 28,
-  },
-  quickActionText: {
-    fontSize: 12,
-    color: Colors.light.text,
-    textAlign: "center",
-    fontWeight: "500" as const,
-  },
-  updateCard: {
-    width: width * 0.6,
-    borderRadius: 20,
-    backgroundColor: "#fff",
-    overflow: "hidden",
-    marginRight: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
-  },
-  updateImage: {
-    width: "100%",
-    height: 120,
-  },
-  updateContent: {
-    padding: 14,
-  },
-  updateCategory: {
-    fontSize: 11,
-    fontWeight: "600" as const,
-    color: Colors.light.primary,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-    marginBottom: 6,
-  },
-  updateTitle: {
-    fontSize: 14,
-    fontWeight: "600" as const,
-    color: Colors.light.text,
-    lineHeight: 20,
   },
   bannerSection: {
     paddingHorizontal: 20,
