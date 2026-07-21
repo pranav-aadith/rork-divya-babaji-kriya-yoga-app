@@ -29,7 +29,10 @@ interface PersistedCache {
 
 /** Query keys whose data we should persist across app restarts. */
 function shouldPersist(queryKey: readonly unknown[]): boolean {
-  if (!Array.isArray(queryKey) || queryKey[0] !== "wp") return false;
+  if (!Array.isArray(queryKey)) return false;
+  // The crawler seed is small and high-value on a cold start — persist it.
+  if (queryKey[0] === "crawler") return true;
+  if (queryKey[0] !== "wp") return false;
   // Skip per-post / per-page detail fetches; list fetches are what make tabs
   // feel instant and they get reused across screens.
   const kind = queryKey[1];
