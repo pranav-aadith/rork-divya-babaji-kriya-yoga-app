@@ -16,15 +16,6 @@ import {
   fetchProgramPages,
 } from "@/services/wordpress";
 import { restoreCache, persistCache } from "@/services/queryPersister";
-import {
-  CRAWLER_SEED_ENABLED,
-  fetchCrawlerData,
-  loadCrawlerSeed,
-  transformCrawlerToPosts,
-  transformCrawlerToPages,
-  transformCrawlerToQuotes,
-} from "@/services/crawlerSeed";
-import { CRAWLER_SEED_QUERY_KEY } from "@/hooks/useCrawlerSeed";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -45,31 +36,6 @@ const queryClient = new QueryClient({
 // Restore the persisted cache once on module load so the first render can
 // use cached data instead of waiting on the slow WordPress API.
 const cacheRestored = restoreCache(queryClient);
-
-// If the crawler seed feature is enabled, also restore the last-saved seed from
-// AsyncStorage and pre-populate the list query caches so tabs render instantly
-// even on a first launch with no persisted RQ cache. The live WP API then
-// refreshes the data in the background.
-const crawlerSeedHydrated: Promise<void> = CRAWLER_SEED_ENABLED
-  ? loadCrawlerSeed().then((entries) => {
-      if (!entries || entries.length === 0) return;
-      const posts = transformCrawlerToPosts(entries);
-      const pages = transformCrawlerToPages(entries);
-      const quotes = transformCrawlerToQuotes(entries);
-      if (posts.length > 0) {
-        queryClient.setQueryData(["wp", "posts", undefined], posts);
-        // Events come from the same posts list; seed it too so the Events tab
-        // shows content before the live API responds.
-        queryClient.setQueryData(["wp", "events", 50], posts);
-      }
-      if (pages.length > 0) {
-        queryClient.setQueryData(["wp", "programs"], pages);
-      }
-      if (quotes.length > 0) {
-        queryClient.setQueryData(["wp", "quotes", 20], quotes);
-      }
-    })
-  : Promise.resolve();
 
 function RootLayoutNav() {
   return (
@@ -163,7 +129,7 @@ export default function RootLayout() {
     // screen, so users see content immediately rather than empty loading
     // states on a cold start.
     let mounted = true;
-    Promise.all([cacheRestored, crawlerSeedHydrated]).finally(() => {
+    cacheRestored.finally(() => {
       if (mounted) {
         setIsReady(true);
         SplashScreen.hideAsync();
@@ -191,16 +157,6 @@ export default function RootLayout() {
       queryFn: () => fetchEventPosts(50),
       staleTime: 1000 * 60 * 5,
     });
-    // Refresh the crawler seed from the hosted URL in the background. The
-    // hydrated AsyncStorage seed is already visible; this updates it for the
-    // next launch and picks up any newly crawled pages.
-    if (CRAWLER_SEED_ENABLED) {
-      queryClient.prefetchQuery({
-        queryKey: CRAWLER_SEED_QUERY_KEY,
-        queryFn: fetchCrawlerData,
-        staleTime: 1000 * 60 * 60 * 24,
-      });
-    }
   }, []);
 
   useEffect(() => {
