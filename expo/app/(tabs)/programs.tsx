@@ -30,7 +30,7 @@ function getProgramCardImage(program: Page) {
   if (program.slug === "gharbha-sanskar") {
     return GARBHA_SANSKAR_CARD_IMAGE;
   }
-  if (program.slug === "sushumna-sikshana-2") {
+  if (program.slug === "sushumna-sikshana-2-2") {
     return SUSHUMNA_SIKSHANA_CARD_IMAGE;
   }
   return { uri: program.imageUrl ?? FALLBACK_IMAGE };

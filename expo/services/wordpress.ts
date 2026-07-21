@@ -392,7 +392,7 @@ export async function fetchTags(): Promise<WPTag[]> {
 /** Slugs for the main program pages on the website */
 export const PROGRAM_SLUGS = [
   "sushumna-vani",
-  "sushumna-sikshana-2",
+  "sushumna-sikshana-2-2",
   "gharbha-sanskar",
 ] as const;
 

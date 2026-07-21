@@ -196,7 +196,7 @@ export default function ProgramDetailScreen() {
 
   const isSushumnaVani = program.slug === "sushumna-vani";
   const isGarbhaSanskar = program.slug === "gharbha-sanskar";
-  const isSushumnaSikshana = program.slug === "sushumna-sikshana-2";
+  const isSushumnaSikshana = program.slug === "sushumna-sikshana-2-2";
   const blocks = filterNoiseBlocks(htmlToBlocks(program.content));
   const garbhaSanskarImage = require("@/assets/images/garbha-sanskar.png");
 const sushumnaSikshanaImage = require("@/assets/images/sushumna-sikshana.png");
