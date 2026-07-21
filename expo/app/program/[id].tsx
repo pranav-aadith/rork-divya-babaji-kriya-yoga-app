@@ -25,7 +25,6 @@ const YOUTUBE_LINK_GARBHA_SANSKAR = "http://youtube.com/@DivyaBabajiSushumnaKriy
 const YOUTUBE_LINK_SUSHUMNA_SIKSHANA = "";
 const REGISTER_LINK_ANUDINAM = "https://forms.gle/jcQPyYpqfWw2pBoMA";
 const REGISTER_LINK_YOGA_MEDITATION = "https://forms.gle/PBNX4gMzDrUJUGVv7";
-const REGISTER_LINK_SLOKA = "https://forms.gle/YBB8B7M9ZHjgyGfE6";
 const REGISTER_LINK_PRATHAMIK = "https://docs.google.com/forms/d/e/1FAIpQLSfqcN7eHcJLelWrV8naepnqFLxkpalfGTSnQ0o52zY4piEMsA/viewform";
 const REGISTER_LINK_BALA = "https://docs.google.com/forms/d/e/1FAIpQLSdlxFsE-dpFOZDYMm1nGAQxzt1JKKnfv-vBbNqj2UQDeWWiUw/viewform";
 const REGISTER_LINK_SPARKS = "https://forms.gle/gvxPdgzqLKTfBTbz6";
@@ -53,13 +52,6 @@ const SIKSHANA_BATCHES: SikshanaBatch[] = [
     schedule: "Every Friday 6:15 PM \u2013 6:45 PM IST (30 min)",
     language: "English",
     registerUrl: REGISTER_LINK_YOGA_MEDITATION,
-  },
-  {
-    name: "Sushumna Sikshana Sloka",
-    age: "5 to 14 years",
-    schedule: "Every Friday 7:00 PM \u2013 7:30 PM IST (30 min)",
-    language: "English",
-    registerUrl: REGISTER_LINK_SLOKA,
   },
   {
     name: "Sushumna Bala Sikshana",
