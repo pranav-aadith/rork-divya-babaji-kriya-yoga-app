@@ -82,7 +82,7 @@ const SIKSHANA_BATCHES: SikshanaBatch[] = [
     language: "English",
     registerUrl: REGISTER_LINK_SPARKS,
   },
-  ];
+];
 
 const VANI_PODCASTS = [
   {
@@ -106,11 +106,32 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-/** Filter out noise blocks (Spotify mentions, duplicate language labels, schedule info) */
+/** Batch names that appear as standalone lines in content (to be filtered) */
+const BATCH_NAME_PATTERNS = [
+  /anudinam\s+balanandam/i,
+  /sushumna\s+sikshana\s+yoga\s+&\s+meditation/i,
+  /sushumna\s+sikshana\s+sloka/i,
+  /sushumna\s+bala\s+sikshana/i,
+  /sushumna\s+prathamika\s+sikshana/i,
+  /sushumna\s+sparks/i,
+];
+
+/** Filter out noise blocks (Spotify, duplicate labels, schedule info lines, batch names, URLs) */
 function filterNoiseBlocks(blocks: ContentBlock[]): ContentBlock[] {
   return blocks.filter((b) => {
     const lower = b.text.toLowerCase();
-    // Batch schedule info: named programs or Age:/Schedule:/Language: pattern
+    const trimmed = b.text.trim();
+    // Individual schedule info lines: "Age:", "Schedule", "Language:" (with optional space before colon)
+    const isScheduleLine =
+      /^age\s*[:\-]/i.test(trimmed) ||
+      /^schedule\s*[:\-]/i.test(trimmed) ||
+      /^language\s*[:\-]/i.test(trimmed);
+    // Standalone register URLs (forms.gle / google forms)
+    const isRegisterUrl =
+      /^https?:\/\/(forms\.gle|docs\.google\.com\/forms)/i.test(trimmed);
+    // Standalone batch name lines
+    const isBatchName = BATCH_NAME_PATTERNS.some((p) => p.test(trimmed));
+    // Combined Age+Schedule+Language block (multi-line)
     const isScheduleInfo =
       /anudinam\s+balanandam/i.test(b.text) ||
       /sushumna\s+sikshana\s+yoga\s+&\s+meditation/i.test(b.text) ||
@@ -126,7 +147,10 @@ function filterNoiseBlocks(blocks: ContentBlock[]): ContentBlock[] {
       !/follow\s+us/i.test(lower) &&
       !/register\s+here/i.test(lower) &&
       !/connect\s+with\s+us/i.test(lower) &&
-      !isScheduleInfo
+      !isScheduleInfo &&
+      !isScheduleLine &&
+      !isRegisterUrl &&
+      !isBatchName
     );
   });
 }
