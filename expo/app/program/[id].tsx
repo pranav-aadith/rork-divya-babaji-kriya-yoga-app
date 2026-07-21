@@ -23,9 +23,66 @@ const SPOTIFY_HEADING_COLOR = "#E48241";
 
 const YOUTUBE_LINK_GARBHA_SANSKAR = "http://youtube.com/@DivyaBabajiSushumnaKriyaYoga/playlists";
 const YOUTUBE_LINK_SUSHUMNA_SIKSHANA = "";
+const REGISTER_LINK_ANUDINAM = "https://forms.gle/jcQPyYpqfWw2pBoMA";
+const REGISTER_LINK_YOGA_MEDITATION = "https://forms.gle/PBNX4gMzDrUJUGVv7";
+const REGISTER_LINK_SLOKA = "https://forms.gle/YBB8B7M9ZHjgyGfE6";
 const REGISTER_LINK_PRATHAMIK = "https://docs.google.com/forms/d/e/1FAIpQLSfqcN7eHcJLelWrV8naepnqFLxkpalfGTSnQ0o52zY4piEMsA/viewform";
 const REGISTER_LINK_BALA = "https://docs.google.com/forms/d/e/1FAIpQLSdlxFsE-dpFOZDYMm1nGAQxzt1JKKnfv-vBbNqj2UQDeWWiUw/viewform";
 const REGISTER_LINK_SPARKS = "https://forms.gle/gvxPdgzqLKTfBTbz6";
+
+/** Sushumna Sikshana batch tiles (ordered as displayed) */
+interface SikshanaBatch {
+  name: string;
+  age: string;
+  schedule: string;
+  language: string;
+  registerUrl: string;
+}
+
+const SIKSHANA_BATCHES: SikshanaBatch[] = [
+  {
+    name: "Anudinam Balanandam",
+    age: "5 to 14 years",
+    schedule: "Everyday 6:15 AM \u2013 6:30 AM IST (15 min)",
+    language: "English",
+    registerUrl: REGISTER_LINK_ANUDINAM,
+  },
+  {
+    name: "Sushumna Sikshana Yoga & Meditation",
+    age: "5 to 14 years",
+    schedule: "Every Friday 6:15 PM \u2013 6:45 PM IST (30 min)",
+    language: "English",
+    registerUrl: REGISTER_LINK_YOGA_MEDITATION,
+  },
+  {
+    name: "Sushumna Sikshana Sloka",
+    age: "5 to 14 years",
+    schedule: "Every Friday 7:00 PM \u2013 7:30 PM IST (30 min)",
+    language: "English",
+    registerUrl: REGISTER_LINK_SLOKA,
+  },
+  {
+    name: "Sushumna Bala Sikshana",
+    age: "8 to 14 years",
+    schedule: "Every Sunday 11:00 AM \u2013 12:00 PM IST (1 hr)",
+    language: "English",
+    registerUrl: REGISTER_LINK_BALA,
+  },
+  {
+    name: "Sushumna Prathamika Sikshana",
+    age: "5 to 8 years",
+    schedule: "Every Sunday 12:15 PM \u2013 1:00 PM IST (45 min)",
+    language: "Telugu",
+    registerUrl: REGISTER_LINK_PRATHAMIK,
+  },
+  {
+    name: "Sushumna Sparks",
+    age: "5 to 14 years",
+    schedule: "Sunday to Friday",
+    language: "English",
+    registerUrl: REGISTER_LINK_SPARKS,
+  },
+  ];
 
 const VANI_PODCASTS = [
   {
@@ -49,10 +106,18 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-/** Filter out noise blocks (Spotify mentions, duplicate language labels) */
+/** Filter out noise blocks (Spotify mentions, duplicate language labels, schedule info) */
 function filterNoiseBlocks(blocks: ContentBlock[]): ContentBlock[] {
   return blocks.filter((b) => {
     const lower = b.text.toLowerCase();
+    // Batch schedule info: named programs or Age:/Schedule:/Language: pattern
+    const isScheduleInfo =
+      /anudinam\s+balanandam/i.test(b.text) ||
+      /sushumna\s+sikshana\s+yoga\s+&\s+meditation/i.test(b.text) ||
+      /sushumna\s+sikshana\s+sloka/i.test(b.text) ||
+      (/age\s*:/i.test(b.text) &&
+        /schedule\s*:/i.test(b.text) &&
+        /language\s*:/i.test(b.text));
     return (
       !/spotify/i.test(lower) &&
       !/sushumna\s+vani\s*\(english\)/i.test(b.text) &&
@@ -60,7 +125,8 @@ function filterNoiseBlocks(blocks: ContentBlock[]): ContentBlock[] {
       !/sushumna\s+vani\s*\(telugu\)/i.test(b.text) &&
       !/follow\s+us/i.test(lower) &&
       !/register\s+here/i.test(lower) &&
-      !/connect\s+with\s+us/i.test(lower)
+      !/connect\s+with\s+us/i.test(lower) &&
+      !isScheduleInfo
     );
   });
 }
@@ -347,42 +413,20 @@ const sushumnaSikshanaImage = require("@/assets/images/sushumna-sikshana.png");
         {isSushumnaSikshana ? (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Sushumna Sikshana Batches</Text>
-            <View style={styles.batchTile}>
-              <Text style={styles.batchTileHeading}>Sushumna Prathamik Sikshana</Text>
-              <Text style={styles.batchTileInfo}>Age: 5 to 8 years</Text>
-              <Text style={styles.batchTileInfo}>Day: Saturday</Text>
-              <Text style={styles.batchTileInfo}>Language: Telugu</Text>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => Linking.openURL(REGISTER_LINK_PRATHAMIK)}
-              >
-                <Text style={styles.batchRegisterLink}>Register Here</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.batchTile}>
-              <Text style={styles.batchTileHeading}>Sushumna Bala Sikshana</Text>
-              <Text style={styles.batchTileInfo}>Age: 8 to 14 years</Text>
-              <Text style={styles.batchTileInfo}>Day: Saturday</Text>
-              <Text style={styles.batchTileInfo}>Language: English</Text>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => Linking.openURL(REGISTER_LINK_BALA)}
-              >
-                <Text style={styles.batchRegisterLink}>Register Here</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.batchTile}>
-              <Text style={styles.batchTileHeading}>Sushumna Sparks</Text>
-              <Text style={styles.batchTileInfo}>Age: 5 to 14 years</Text>
-              <Text style={styles.batchTileInfo}>Day: Sunday to Friday</Text>
-              <Text style={styles.batchTileInfo}>Language: English</Text>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => Linking.openURL(REGISTER_LINK_SPARKS)}
-              >
-                <Text style={styles.batchRegisterLink}>Register Here</Text>
-              </TouchableOpacity>
-            </View>
+            {SIKSHANA_BATCHES.map((batch) => (
+              <View key={batch.name} style={styles.batchTile}>
+                <Text style={styles.batchTileHeading}>{batch.name}</Text>
+                <Text style={styles.batchTileInfo}>Age: {batch.age}</Text>
+                <Text style={styles.batchTileInfo}>Schedule: {batch.schedule}</Text>
+                <Text style={styles.batchTileInfo}>Language: {batch.language}</Text>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => Linking.openURL(batch.registerUrl)}
+                >
+                  <Text style={styles.batchRegisterLink}>Register Here</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
           </View>
         ) : null}
 
