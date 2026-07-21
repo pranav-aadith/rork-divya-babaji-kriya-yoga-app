@@ -106,6 +106,7 @@ export default function WisdomScreen() {
         (categoryCountMap.get(CATEGORY_IDS.quoteTamil) ?? 0)
       );
     }
+    if (category.slug === "music") return undefined;
     if (category.id === null) return 0;
     return categoryCountMap.get(category.id) ?? 0;
   };
@@ -117,6 +118,10 @@ export default function WisdomScreen() {
     }
     if (category.slug === "travel-diaries") {
       router.push("/wisdom/travel-diaries");
+      return;
+    }
+    if (category.slug === "music") {
+      router.push("/wisdom/music");
       return;
     }
     const queryId = category.id ?? "articles";
@@ -178,7 +183,7 @@ export default function WisdomScreen() {
               <View style={styles.tileContent}>
                 <Text style={styles.tileTitle}>{category.name}</Text>
                 <Text style={styles.tileCount}>
-                  {count > 0 ? `${count} items` : "Explore"}
+                  {count === undefined ? "Listen" : count > 0 ? `${count} items` : "Explore"}
                 </Text>
               </View>
             </TouchableOpacity>

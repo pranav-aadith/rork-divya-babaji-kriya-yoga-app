@@ -96,6 +96,13 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
+        name="wisdom/music"
+        options={{
+          title: "Music",
+          presentation: "card",
+        }}
+      />
+      <Stack.Screen
         name="wisdom/page/[slug]"
         options={{
           title: "Page",
