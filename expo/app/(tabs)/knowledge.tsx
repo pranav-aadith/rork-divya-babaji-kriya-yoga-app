@@ -27,8 +27,7 @@ const WISDOM_CATEGORIES = [
     id: 50,
     name: "Books",
     slug: "books",
-    image:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&q=80",
+    image: require("@/assets/images/sushumna-kriya-yoga-book-cover.png"),
   },
   {
     id: 60,
@@ -252,10 +251,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     position: "absolute",
+    resizeMode: "contain",
   },
   tileOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(45, 42, 38, 0.45)",
+  },
+  tileImageContain: {
+    backgroundColor: Colors.light.cardBackground,
   },
   tileContent: {
     position: "absolute",
