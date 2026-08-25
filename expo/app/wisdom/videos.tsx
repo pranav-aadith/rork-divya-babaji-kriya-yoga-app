@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,13 @@ import { usePosts } from "@/hooks/useWordPress";
 import { CATEGORY_IDS } from "@/services/wordpress";
 import { LoadingState, ErrorState, EmptyState } from "@/components/LoadingStates";
 import { extractYouTubeVideos } from "@/utils/html";
+import {
+  detectLanguage,
+  getLanguageName,
+  getAvailableLanguages,
+  type LanguageFilter,
+  type DetectedLanguage,
+} from "@/utils/language";
 import type { Post } from "@/services/wordpress";
 
 interface VideoItem {
@@ -25,6 +32,7 @@ interface VideoItem {
   title: string;
   watchUrl: string;
   thumbnail: string;
+  language: DetectedLanguage;
 }
 
 const FALLBACK_THUMBNAIL =
@@ -40,6 +48,10 @@ function buildVideoList(posts: Post[] | undefined): VideoItem[] {
     for (const video of videos) {
       if (seen.has(video.videoId)) continue;
       seen.add(video.videoId);
+      const language = detectLanguage(
+        `${video.title} ${post.title}`,
+        post.categories
+      );
       items.push({
         id: `${post.id}-${video.videoId}`,
         postId: post.id,
@@ -48,6 +60,7 @@ function buildVideoList(posts: Post[] | undefined): VideoItem[] {
         title: video.title || post.title,
         watchUrl: video.watchUrl,
         thumbnail: `https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`,
+        language,
       });
     }
   }
@@ -63,6 +76,17 @@ export default function VideosScreen() {
     includeContent: true,
   });
   const videos = useMemo(() => buildVideoList(posts), [posts]);
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageFilter>("all");
+
+  const availableLanguages = useMemo(
+    () => getAvailableLanguages(videos.map((v) => v.language), ["en", "hi", "te"]),
+    [videos]
+  );
+
+  const displayedVideos = useMemo(() => {
+    if (selectedLanguage === "all") return videos;
+    return videos.filter((v) => v.language === selectedLanguage);
+  }, [videos, selectedLanguage]);
 
   const openVideo = (url: string) => {
     Linking.openURL(url).catch(() => {
@@ -100,6 +124,8 @@ export default function VideosScreen() {
     );
   }
 
+  const showLanguageFilter = availableLanguages.length > 2;
+
   return (
     <>
       <Stack.Screen
@@ -127,8 +153,42 @@ export default function VideosScreen() {
           </Text>
         </View>
 
+        {showLanguageFilter && (
+          <View style={styles.filterSection}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterChips}
+            >
+              {availableLanguages.map((code) => {
+                const isSelected = selectedLanguage === code;
+                return (
+                  <TouchableOpacity
+                    key={code}
+                    style={[
+                      styles.filterChip,
+                      isSelected && styles.filterChipActive,
+                    ]}
+                    onPress={() => setSelectedLanguage(code)}
+                    activeOpacity={0.85}
+                  >
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        isSelected && styles.filterChipTextActive,
+                      ]}
+                    >
+                      {getLanguageName(code)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )}
+
         <View style={styles.list}>
-          {videos.map((video, index) => (
+          {displayedVideos.map((video, index) => (
             <TouchableOpacity
               key={video.id}
               style={styles.card}
@@ -176,8 +236,12 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   backButton: {
-    padding: 8,
+    width: 44,
+    height: 44,
     marginLeft: -8,
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     padding: 20,
@@ -193,6 +257,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.light.textSecondary,
     lineHeight: 24,
+  },
+  filterSection: {
+    marginBottom: 20,
+  },
+  filterChips: {
+    paddingHorizontal: 20,
+    gap: 10,
+  },
+  filterChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: Colors.light.border ?? "rgba(0,0,0,0.08)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  filterChipActive: {
+    backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
+  },
+  filterChipText: {
+    fontSize: 14,
+    fontWeight: "600" as const,
+    color: Colors.light.text,
+  },
+  filterChipTextActive: {
+    color: "#fff",
   },
   list: {
     paddingHorizontal: 20,

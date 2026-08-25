@@ -202,8 +202,12 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   backButton: {
-    padding: 8,
+    width: 44,
+    height: 44,
     marginLeft: -8,
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     padding: 20,
