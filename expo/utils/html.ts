@@ -210,6 +210,47 @@ export function extractContentImages(html: string, minSize = 200): string[] {
   return images;
 }
 
+/** A YouTube video extracted from an iframe embed in HTML content */
+export interface YouTubeVideo {
+  videoId: string;
+  title: string;
+  watchUrl: string;
+  embedUrl: string;
+}
+
+/**
+ * Extract YouTube videos from <iframe> embeds in HTML content.
+ * Returns title, video ID, and both watch and embed URLs for each iframe.
+ */
+export function extractYouTubeVideos(html: string): YouTubeVideo[] {
+  if (!html) return [];
+  const videos: YouTubeVideo[] = [];
+  const iframeRegex = /<iframe[^>]*>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = iframeRegex.exec(html)) !== null) {
+    const tag = match[0];
+    const srcMatch = tag.match(/src=["']([^"']+)["']/i);
+    if (!srcMatch || !srcMatch[1]) continue;
+    const src = srcMatch[1];
+    const idMatch = src.match(
+      /(?:youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/
+    );
+    if (!idMatch || !idMatch[1]) continue;
+    const videoId = idMatch[1];
+    const titleMatch = tag.match(/title=["']([^"']*)["']/i);
+    const title = titleMatch ? titleMatch[1].trim() : "";
+    videos.push({
+      videoId,
+      title,
+      watchUrl: `https://www.youtube.com/watch?v=${videoId}`,
+      embedUrl: src,
+    });
+  }
+
+  return videos;
+}
+
 /**
  * Estimate reading time from HTML content.
  * @returns string like "5 min read"

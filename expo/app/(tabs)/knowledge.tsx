@@ -119,6 +119,10 @@ export default function WisdomScreen() {
       router.push("/wisdom/travel-diaries");
       return;
     }
+    if (category.slug === "videos") {
+      router.push("/wisdom/videos");
+      return;
+    }
     if (category.slug === "music") {
       router.push("/wisdom/music");
       return;
