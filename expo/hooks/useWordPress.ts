@@ -25,10 +25,11 @@ export function usePosts(params?: {
   per_page?: number;
   categories?: number;
   search?: string;
+  includeContent?: boolean;
 }) {
   return useQuery({
     queryKey: ["wp", "posts", params],
-    queryFn: () => fetchPosts(params),
+    queryFn: () => fetchPosts(params, params?.includeContent ?? false),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }

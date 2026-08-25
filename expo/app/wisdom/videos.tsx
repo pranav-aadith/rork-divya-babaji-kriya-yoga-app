@@ -60,6 +60,7 @@ export default function VideosScreen() {
   const { data: posts, isLoading, isError, refetch } = usePosts({
     per_page: 50,
     categories: CATEGORY_IDS.videos,
+    includeContent: true,
   });
   const videos = useMemo(() => buildVideoList(posts), [posts]);
 
