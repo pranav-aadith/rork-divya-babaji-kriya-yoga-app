@@ -8,8 +8,8 @@ import {
   Linking,
   Image,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
-import { ArrowLeft, Play, ExternalLink } from "lucide-react-native";
+import { Stack } from "expo-router";
+import { Play, ExternalLink } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { usePosts } from "@/hooks/useWordPress";
 import { CATEGORY_IDS } from "@/services/wordpress";
@@ -69,7 +69,6 @@ function buildVideoList(posts: Post[] | undefined): VideoItem[] {
 }
 
 export default function VideosScreen() {
-  const router = useRouter();
   const { data: posts, isLoading, isError, refetch } = usePosts({
     per_page: 50,
     categories: CATEGORY_IDS.videos,
@@ -128,19 +127,7 @@ export default function VideosScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Videos",
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <ArrowLeft size={24} color={Colors.light.primary} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <Stack.Screen options={{ title: "Videos" }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -234,14 +221,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 20,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    marginLeft: -8,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
   },
   header: {
     padding: 20,

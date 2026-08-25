@@ -41,7 +41,7 @@ function RootLayoutNav() {
   return (
     <Stack
       screenOptions={{
-        headerBackTitle: "Back",
+        headerBackTitle: "",
         headerStyle: {
           backgroundColor: Colors.light.background,
         },

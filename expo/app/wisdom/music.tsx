@@ -10,9 +10,9 @@ import {
   Animated,
   Pressable,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { ArrowLeft, Play, Music2, Headphones } from "lucide-react-native";
+import { Play, Music2, Headphones } from "lucide-react-native";
 import Colors from "@/constants/colors";
 
 const SOUNDCLOUD_URL = "https://soundcloud.com/divyababaji-kriyayoga";
@@ -104,7 +104,6 @@ function EqualizerWaveform({ isPlaying }: { isPlaying: boolean }) {
 }
 
 export default function MusicScreen() {
-  const router = useRouter();
   const [isPressed, setIsPressed] = React.useState(false);
   const [isPlaying, setIsPlaying] = React.useState(true);
   const pressScale = useRef(new Animated.Value(1)).current;
@@ -143,19 +142,7 @@ export default function MusicScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Music",
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <ArrowLeft size={24} color={Colors.light.primary} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <Stack.Screen options={{ title: "Music" }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -256,14 +243,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 20,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    marginLeft: -8,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
   },
   header: {
     padding: 20,

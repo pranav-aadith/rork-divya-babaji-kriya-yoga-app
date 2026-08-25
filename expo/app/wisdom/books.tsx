@@ -5,12 +5,10 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  TouchableOpacity,
   ActivityIndicator,
   type ImageSourcePropType,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
+import { Stack } from "expo-router";
 import Colors from "@/constants/colors";
 import { usePageBySlug } from "@/hooks/useWordPress";
 import { htmlToBlocks, htmlToExcerpt, type ContentBlock } from "@/utils/html";
@@ -148,23 +146,9 @@ function BookSection({
 }
 
 export default function BooksScreen() {
-  const router = useRouter();
-
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Books",
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <ArrowLeft size={24} color={Colors.light.primary} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <Stack.Screen options={{ title: "Books" }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -200,14 +184,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 20,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    marginLeft: -8,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
   },
   header: {
     padding: 20,

@@ -8,8 +8,8 @@ import {
   Linking,
   Alert,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
-import { ArrowLeft, Play } from "lucide-react-native";
+import { Stack } from "expo-router";
+import { Play } from "lucide-react-native";
 import Colors from "@/constants/colors";
 
 interface PlaylistTile {
@@ -45,8 +45,6 @@ const PLAYLISTS: PlaylistTile[] = [
 ];
 
 export default function KashiYanamScreen() {
-  const router = useRouter();
-
   const openPlaylist = async (url: string) => {
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
@@ -58,19 +56,7 @@ export default function KashiYanamScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Kashi Yanam",
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <ArrowLeft size={24} color={Colors.light.primary} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <Stack.Screen options={{ title: "Kashi Yanam" }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -118,14 +104,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 20,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    marginLeft: -8,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
   },
   header: {
     padding: 20,

@@ -5,11 +5,9 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { useLocalSearchParams, Stack, useRouter } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
+import { useLocalSearchParams, Stack } from "expo-router";
 import Colors from "@/constants/colors";
 import { usePageBySlug } from "@/hooks/useWordPress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
@@ -59,7 +57,6 @@ const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=800";
 
 export default function PageDetailScreen() {
-  const router = useRouter();
   const { slug, title } = useLocalSearchParams<{
     slug?: string;
     title?: string;
@@ -100,19 +97,7 @@ export default function PageDetailScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: pageTitle,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <ArrowLeft size={24} color={Colors.light.primary} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <Stack.Screen options={{ title: pageTitle }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -164,14 +149,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 20,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    marginLeft: -8,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
   },
   heroImage: {
     width: "100%",

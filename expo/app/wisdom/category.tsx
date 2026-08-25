@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
-import { Clock, ArrowLeft } from "lucide-react-native";
+import { Clock } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { usePosts, useQuotes } from "@/hooks/useWordPress";
 import { CATEGORY_IDS } from "@/services/wordpress";
@@ -181,19 +181,7 @@ export default function WisdomCategoryScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: categoryName,
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <ArrowLeft size={24} color={Colors.light.primary} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <Stack.Screen options={{ title: categoryName }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -344,14 +332,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 20,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    marginLeft: -8,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
   },
   header: {
     padding: 20,

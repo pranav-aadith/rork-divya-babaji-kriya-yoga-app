@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useCategories } from "@/hooks/useWordPress";
 import { CATEGORY_IDS } from "@/services/wordpress";
@@ -93,19 +92,7 @@ export default function TravelDiariesScreen() {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Travel Diaries",
-          headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <ArrowLeft size={24} color={Colors.light.primary} />
-            </TouchableOpacity>
-          ),
-        }}
-      />
+      <Stack.Screen options={{ title: "Travel Diaries" }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -166,14 +153,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 20,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    marginLeft: -8,
-    borderRadius: 22,
-    justifyContent: "center",
-    alignItems: "center",
   },
   header: {
     padding: 20,
