@@ -11,12 +11,18 @@ export interface ContentBlock {
   level: number;
 }
 
-/** Strip all HTML tags and decode entities */
+/** Strip all HTML tags and decode entities.
+ * Block-level closing tags become paragraph breaks so text from
+ * div-based (Elementor) layouts stays separated into paragraphs. */
 function stripTags(html: string): string {
   if (!html) return "";
   return html
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<\/p>/gi, "\n\n")
+    .replace(
+      /<\/(?:div|section|article|li|blockquote|ul|ol|figure|figcaption|table|tr|td|th|h[1-6])>/gi,
+      "\n\n",
+    )
     .replace(/<p[^>]*>/gi, "")
     .replace(/<[^>]*>/g, "")
     .replace(/&nbsp;/g, " ")
@@ -107,43 +113,72 @@ export function htmlToParagraphs(html: string): string[] {
 }
 
 /**
+ * Convert block-level containers (<div>, <section>, <li>, table parts, …)
+ * into <p> elements, and headings into <p data-block="hN"> markers, so the
+ * block regex can extract text from Elementor/div-based page layouts.
+ * Nested containers are handled by the non-greedy block regex: an outer
+ * wrapper matches up to the first inner closing tag, then the scan continues
+ * with the remaining inner blocks — no duplication.
+ */
+function normalizeBlockTags(html: string): string {
+  return html
+    .replace(/<h([1-6])[^>]*>/gi, '<p data-block="h$1">')
+    .replace(/<\/h[1-6]>/gi, "</p>")
+    .replace(
+      /<(?:div|section|article|li|blockquote|ul|ol|figure|figcaption|table|tr|td|th)[^>]*>/gi,
+      "<p>",
+    )
+    .replace(
+      /<\/(?:div|section|article|li|blockquote|ul|ol|figure|figcaption|table|tr|td|th)>/gi,
+      "</p>",
+    );
+}
+
+/**
  * Extract structured content blocks (headings + paragraphs) from HTML.
  * Headings (h1–h6) are returned as "heading" blocks with their level.
- * All other block-level content becomes "paragraph" blocks.
+ * All other block-level content (paragraphs, divs, list items, table cells…)
+ * becomes "paragraph" blocks, so div-based (Elementor) layouts render
+ * with their paragraph structure intact.
  * Social media, "Follow us", and embed noise is removed.
  */
 export function htmlToBlocks(html: string): ContentBlock[] {
   if (!html) return [];
   const denoised = removeNoiseHtml(html);
+  const normalized = normalizeBlockTags(denoised);
   const blocks: ContentBlock[] = [];
 
-  // Match headings and paragraphs in order
-  const blockRegex =
-    /<(h[1-6])[^>]*>([\s\S]*?)<\/\1>|<p[^>]*>([\s\S]*?)<\/p>|<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi;
+  // Match <p ...>content</p> — every block container was normalized to <p>
+  const blockRegex = /<p([^>]*)>([\s\S]*?)<\/p>/gi;
   let match: RegExpExecArray | null;
 
-  while ((match = blockRegex.exec(denoised)) !== null) {
-    const headingTag = match[1];
-    const headingContent = match[2];
-    const paragraphContent = match[3];
-    const blockquoteContent = match[4];
+  while ((match = blockRegex.exec(normalized)) !== null) {
+    let attrs = match[1];
+    let content = match[2];
 
-    if (headingTag && headingContent !== undefined) {
-      const level = parseInt(headingTag.charAt(1), 10);
-      const text = stripTags(headingContent);
-      if (text.length > 0) {
-        blocks.push({ type: "heading", text, level });
-      }
-    } else if (paragraphContent !== undefined) {
-      const text = stripTags(paragraphContent);
-      if (text.length > 0) {
-        blocks.push({ type: "paragraph", text, level: 0 });
-      }
-    } else if (blockquoteContent !== undefined) {
-      const text = stripTags(blockquoteContent);
-      if (text.length > 0) {
-        blocks.push({ type: "paragraph", text, level: 0 });
-      }
+    // Elementor nests headings inside wrapper divs: <div><h2>…</h2></div>
+    // normalizes to <p>…<p data-block="h2">…</p>, so the outer wrapper
+    // match has empty attrs and the heading marker sits inside its content.
+    const innerHeading = content.match(
+      /<p\s+data-block="h([1-6])"[^>]*>([\s\S]*)$/i,
+    );
+    if (innerHeading) {
+      attrs = innerHeading[1] ? ` data-block="h${innerHeading[1]}"` : "";
+      content = innerHeading[2];
+    }
+
+    const text = stripTags(content);
+    if (text.length === 0) continue;
+
+    const headingMatch = attrs.match(/data-block="h([1-6])"/i);
+    if (headingMatch) {
+      blocks.push({
+        type: "heading",
+        text,
+        level: parseInt(headingMatch[1], 10),
+      });
+    } else {
+      blocks.push({ type: "paragraph", text, level: 0 });
     }
   }
 
