@@ -6,17 +6,12 @@ import {
   ScrollView,
   Image,
   Animated,
-  TouchableOpacity,
-  Linking,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "@/constants/colors";
 import { useQuotes } from "@/hooks/useWordPress";
 import { InlineLoading } from "@/components/LoadingStates";
 import type { Post } from "@/services/wordpress";
-
-const WHATSAPP_CHAT_URL = "https://api.whatsapp.com/send?phone=917337555449";
 
 export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
@@ -42,14 +37,9 @@ export default function HomeScreen() {
 
   const currentQuote: Post | undefined = quotesData?.[quoteIndex];
 
-  const openWhatsAppChat = () => {
-    Linking.openURL(WHATSAPP_CHAT_URL).catch(() => {});
-  };
-
   return (
-    <View style={styles.container}>
     <ScrollView
-      style={styles.scroll}
+      style={styles.container}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
@@ -123,19 +113,27 @@ export default function HomeScreen() {
         )}
       </View>
 
+      <View style={styles.bannerSection}>
+        <LinearGradient
+          colors={[Colors.light.secondary, Colors.light.secondaryLight]}
+          style={styles.banner}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+        >
+          <View style={styles.bannerContent}>
+            <Text style={styles.bannerTitle}>New to Kriya Yoga?</Text>
+            <Text style={styles.bannerText}>
+              Start with our free introduction session
+            </Text>
+          </View>
+          <View style={styles.bannerDecor}>
+            <Text style={styles.bannerEmoji}>✨</Text>
+          </View>
+        </LinearGradient>
+      </View>
+
       <View style={styles.bottomPadding} />
     </ScrollView>
-
-    <TouchableOpacity
-      style={styles.whatsappButton}
-      activeOpacity={0.85}
-      onPress={openWhatsAppChat}
-      accessibilityRole="button"
-      accessibilityLabel="Chat with us on WhatsApp"
-    >
-      <FontAwesome name="whatsapp" size={32} color="#fff" />
-    </TouchableOpacity>
-    </View>
   );
 }
 
@@ -146,9 +144,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 20,
-  },
-  scroll: {
-    flex: 1,
   },
   heroSection: {
     marginBottom: 20,
@@ -253,23 +248,36 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "600" as const,
   },
+  bannerSection: {
+    paddingHorizontal: 20,
+  },
+  banner: {
+    borderRadius: 20,
+    padding: 24,
+    flexDirection: "row",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  bannerContent: {
+    flex: 1,
+  },
+  bannerTitle: {
+    fontSize: 18,
+    fontWeight: "700" as const,
+    color: "#fff",
+    marginBottom: 4,
+  },
+  bannerText: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.85)",
+  },
+  bannerDecor: {
+    marginLeft: 16,
+  },
+  bannerEmoji: {
+    fontSize: 48,
+  },
   bottomPadding: {
     height: 20,
-  },
-  whatsappButton: {
-    position: "absolute",
-    bottom: 96,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "#25D366",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 8,
   },
 });
