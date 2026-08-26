@@ -24,6 +24,8 @@ import {
 } from "@/utils/language";
 import type { Post } from "@/services/wordpress";
 
+const VIDEOS_HERO = require("@/assets/images/videos-hero.jpg");
+
 interface VideoItem {
   id: string;
   postId: number;
@@ -143,6 +145,16 @@ export default function VideosScreen() {
           </Text>
         </View>
 
+        <View style={styles.heroWrap}>
+          <View style={styles.heroCard}>
+            <Image
+              source={VIDEOS_HERO}
+              style={styles.heroImage}
+              resizeMode="cover"
+            />
+          </View>
+        </View>
+
         {showLanguageFilter && (
           <View style={styles.filterSection}>
             <ScrollView
@@ -239,6 +251,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.light.textSecondary,
     lineHeight: 24,
+  },
+  heroWrap: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  heroCard: {
+    borderRadius: 24,
+    overflow: "hidden",
+    backgroundColor: "#0B0B14",
+    shadowColor: "#7C5CFF",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 24,
+    elevation: 8,
+  },
+  heroImage: {
+    width: "100%",
+    aspectRatio: 16 / 9,
   },
   filterSection: {
     marginBottom: 20,
