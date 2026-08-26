@@ -12,7 +12,7 @@ import { useRouter } from "expo-router";
 import { Calendar, Clock, MapPin, Video } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useEventPosts } from "@/hooks/useWordPress";
-import { splitEventsByDate, SiteUnavailableError } from "@/services/wordpress";
+import { apiErrorMessage, splitEventsByDate } from "@/services/wordpress";
 import { LoadingState, ErrorState, EmptyState } from "@/components/LoadingStates";
 import UpcomingEventsContent from "@/components/UpcomingEventsContent";
 import type { Post } from "@/services/wordpress";
@@ -36,10 +36,10 @@ export default function EventsScreen() {
     refetch,
   } = useEventPosts(50);
 
-  const errorMessage =
-    error instanceof SiteUnavailableError
-      ? error.message
-      : "Unable to load events. Please check your connection.";
+  const errorMessage = apiErrorMessage(
+    error,
+    "Unable to load events. Please check your connection."
+  );
 
   const { upcoming, past } = useMemo(() => {
     if (!eventPosts) return { upcoming: [], past: [] };

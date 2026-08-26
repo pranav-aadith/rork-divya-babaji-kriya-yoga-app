@@ -12,7 +12,7 @@ import { useRouter } from "expo-router";
 import { Sparkles } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useCategories } from "@/hooks/useWordPress";
-import { CATEGORY_IDS } from "@/services/wordpress";
+import { apiErrorMessage, CATEGORY_IDS } from "@/services/wordpress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
 import type { WPCategory } from "@/services/wordpress";
 
@@ -78,6 +78,7 @@ export default function WisdomScreen() {
     data: categories,
     isLoading,
     isError,
+    error,
     refetch,
   } = useCategories();
 
@@ -142,7 +143,10 @@ export default function WisdomScreen() {
   if (isError) {
     return (
       <ErrorState
-        message="Unable to load wisdom content. Please check your connection."
+        message={apiErrorMessage(
+          error,
+          "Unable to load wisdom content. Please check your connection."
+        )}
         onRetry={() => refetch()}
       />
     );

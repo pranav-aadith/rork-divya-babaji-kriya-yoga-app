@@ -17,6 +17,7 @@ import { ArrowRight, ChevronDown, ChevronUp, Youtube } from "lucide-react-native
 import Colors from "@/constants/colors";
 import { usePage } from "@/hooks/useWordPress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
+import { apiErrorMessage } from "@/services/wordpress";
 import { htmlToBlocks, htmlToExcerpt, type ContentBlock } from "@/utils/html";
 
 const SPOTIFY_HEADING_COLOR = "#E48241";
@@ -246,7 +247,7 @@ const FALLBACK_IMAGE =
 export default function ProgramDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const numericId = id ? parseInt(id, 10) : null;
-  const { data: program, isLoading, isError, refetch } = usePage(numericId);
+  const { data: program, isLoading, isError, error, refetch } = usePage(numericId);
 
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0]));
 
@@ -277,7 +278,10 @@ export default function ProgramDetailScreen() {
       <>
         <Stack.Screen options={{ title: "Program" }} />
         <ErrorState
-          message="Unable to load this program. Please try again."
+          message={apiErrorMessage(
+            error,
+            "Unable to load this program. Please try again."
+          )}
           onRetry={() => refetch()}
         />
       </>

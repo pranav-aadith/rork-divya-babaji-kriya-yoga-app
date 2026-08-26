@@ -11,6 +11,7 @@ import { Clock, Calendar } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { usePost } from "@/hooks/useWordPress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
+import { apiErrorMessage } from "@/services/wordpress";
 import {
   htmlToParagraphs,
   estimateReadTime,
@@ -23,7 +24,7 @@ const FALLBACK_IMAGE =
 export default function ArticleDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const numericId = id ? parseInt(id, 10) : null;
-  const { data: article, isLoading, isError, refetch } = usePost(numericId);
+  const { data: article, isLoading, isError, error, refetch } = usePost(numericId);
 
   if (isLoading) {
     return (
@@ -39,7 +40,10 @@ export default function ArticleDetailScreen() {
       <>
         <Stack.Screen options={{ title: "Article" }} />
         <ErrorState
-          message="Unable to load this article. Please try again."
+          message={apiErrorMessage(
+            error,
+            "Unable to load this article. Please try again."
+          )}
           onRetry={() => refetch()}
         />
       </>

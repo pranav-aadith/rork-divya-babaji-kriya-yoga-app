@@ -12,7 +12,7 @@ import { Stack } from "expo-router";
 import { Play, ExternalLink } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { usePosts } from "@/hooks/useWordPress";
-import { CATEGORY_IDS } from "@/services/wordpress";
+import { apiErrorMessage, CATEGORY_IDS } from "@/services/wordpress";
 import { LoadingState, ErrorState, EmptyState } from "@/components/LoadingStates";
 import { extractYouTubeVideos } from "@/utils/html";
 import {
@@ -69,7 +69,7 @@ function buildVideoList(posts: Post[] | undefined): VideoItem[] {
 }
 
 export default function VideosScreen() {
-  const { data: posts, isLoading, isError, refetch } = usePosts({
+  const { data: posts, isLoading, isError, error, refetch } = usePosts({
     per_page: 50,
     categories: CATEGORY_IDS.videos,
     includeContent: true,
@@ -107,7 +107,10 @@ export default function VideosScreen() {
       <>
         <Stack.Screen options={{ title: "Videos" }} />
         <ErrorState
-          message="Unable to load videos. Please check your connection."
+          message={apiErrorMessage(
+            error,
+            "Unable to load videos. Please check your connection."
+          )}
           onRetry={() => refetch()}
         />
       </>

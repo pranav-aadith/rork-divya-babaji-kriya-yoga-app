@@ -11,6 +11,7 @@ import {
 import { Stack } from "expo-router";
 import Colors from "@/constants/colors";
 import { usePageBySlug } from "@/hooks/useWordPress";
+import { apiErrorMessage } from "@/services/wordpress";
 import { htmlToBlocks, htmlToExcerpt, type ContentBlock } from "@/utils/html";
 
 const BOOKS = [
@@ -78,7 +79,7 @@ function BookSection({
   image: ImageSourcePropType;
   isFirst: boolean;
 }) {
-  const { data: page, isLoading, isError } = usePageBySlug(slug);
+  const { data: page, isLoading, isError, error } = usePageBySlug(slug);
 
   const sections = useMemo<ContentSection[]>(() => {
     if (!page) return [];
@@ -109,7 +110,7 @@ function BookSection({
       ) : isError ? (
         <View style={styles.errorWrap}>
           <Text style={styles.errorText}>
-            Unable to load content. Please try again.
+            {apiErrorMessage(error, "Unable to load content. Please try again.")}
           </Text>
         </View>
       ) : (

@@ -14,7 +14,7 @@ import Colors from "@/constants/colors";
 import { useProgramPages } from "@/hooks/useWordPress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
 import { htmlToExcerpt } from "@/utils/html";
-import type { Page } from "@/services/wordpress";
+import { apiErrorMessage, type Page } from "@/services/wordpress";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800";
@@ -38,7 +38,7 @@ function getProgramCardImage(program: Page) {
 
 export default function ProgramsScreen() {
   const router = useRouter();
-  const { data: programs, isLoading, isError, refetch } = useProgramPages();
+  const { data: programs, isLoading, isError, error, refetch } = useProgramPages();
 
   if (isLoading) {
     return <LoadingState message="Loading programs…" />;
@@ -47,7 +47,10 @@ export default function ProgramsScreen() {
   if (isError) {
     return (
       <ErrorState
-        message="Unable to load programs. Please check your connection."
+        message={apiErrorMessage(
+          error,
+          "Unable to load programs. Please check your connection."
+        )}
         onRetry={() => refetch()}
       />
     );

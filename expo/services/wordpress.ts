@@ -160,6 +160,14 @@ export interface Page {
 export class SiteUnavailableError extends Error {}
 
 /**
+ * Map a query error to a user-facing message, showing the maintenance
+ * notice when the site is in maintenance mode (503).
+ */
+export function apiErrorMessage(error: unknown, fallback: string): string {
+  return error instanceof SiteUnavailableError ? error.message : fallback;
+}
+
+/**
  * Validate an API response, throwing a descriptive error on failure.
  * A 503 means the site is in maintenance mode — surfaced as a distinct
  * error so screens can show an accurate message.

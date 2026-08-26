@@ -11,6 +11,7 @@ import { useLocalSearchParams, Stack } from "expo-router";
 import Colors from "@/constants/colors";
 import { usePageBySlug } from "@/hooks/useWordPress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
+import { apiErrorMessage } from "@/services/wordpress";
 import { htmlToBlocks, htmlToExcerpt, type ContentBlock } from "@/utils/html";
 
 /** Filter out noise blocks (social media, follow/register/connect sections) */
@@ -64,7 +65,7 @@ export default function PageDetailScreen() {
   const pageSlug = slug ?? "";
   const pageTitle = title ?? "Page";
 
-  const { data: page, isLoading, isError, refetch } = usePageBySlug(pageSlug);
+  const { data: page, isLoading, isError, error, refetch } = usePageBySlug(pageSlug);
 
   const sections = useMemo<ContentSection[]>(() => {
     if (!page) return [];
@@ -88,7 +89,10 @@ export default function PageDetailScreen() {
       <>
         <Stack.Screen options={{ title: pageTitle }} />
         <ErrorState
-          message="Unable to load this page. Please try again."
+          message={apiErrorMessage(
+            error,
+            "Unable to load this page. Please try again."
+          )}
           onRetry={() => refetch()}
         />
       </>

@@ -12,6 +12,7 @@ import { Calendar, Clock, MapPin, Video } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { usePost } from "@/hooks/useWordPress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
+import { apiErrorMessage } from "@/services/wordpress";
 import { htmlToParagraphs } from "@/utils/html";
 
 const FALLBACK_IMAGE =
@@ -20,7 +21,7 @@ const FALLBACK_IMAGE =
 export default function EventDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const numericId = id ? parseInt(id, 10) : null;
-  const { data: event, isLoading, isError, refetch } = usePost(numericId);
+  const { data: event, isLoading, isError, error, refetch } = usePost(numericId);
 
   if (isLoading) {
     return (
@@ -36,7 +37,10 @@ export default function EventDetailScreen() {
       <>
         <Stack.Screen options={{ title: "Event Details" }} />
         <ErrorState
-          message="Unable to load this event. Please try again."
+          message={apiErrorMessage(
+            error,
+            "Unable to load this event. Please try again."
+          )}
           onRetry={() => refetch()}
         />
       </>

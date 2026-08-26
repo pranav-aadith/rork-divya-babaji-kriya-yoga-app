@@ -10,7 +10,7 @@ import {
 import { Stack, useRouter } from "expo-router";
 import Colors from "@/constants/colors";
 import { useCategories } from "@/hooks/useWordPress";
-import { CATEGORY_IDS } from "@/services/wordpress";
+import { apiErrorMessage, CATEGORY_IDS } from "@/services/wordpress";
 import type { WPCategory } from "@/services/wordpress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
 
@@ -49,6 +49,7 @@ export default function TravelDiariesScreen() {
     data: categories,
     isLoading,
     isError,
+    error,
     refetch,
   } = useCategories();
 
@@ -84,7 +85,10 @@ export default function TravelDiariesScreen() {
   if (isError) {
     return (
       <ErrorState
-        message="Unable to load travel diaries. Please check your connection."
+        message={apiErrorMessage(
+          error,
+          "Unable to load travel diaries. Please check your connection."
+        )}
         onRetry={() => refetch()}
       />
     );

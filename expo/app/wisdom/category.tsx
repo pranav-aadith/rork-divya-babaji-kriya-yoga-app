@@ -12,7 +12,7 @@ import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { Clock } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { usePosts, useQuotes } from "@/hooks/useWordPress";
-import { CATEGORY_IDS } from "@/services/wordpress";
+import { apiErrorMessage, CATEGORY_IDS } from "@/services/wordpress";
 import { LoadingState, ErrorState, EmptyState } from "@/components/LoadingStates";
 import { extractContentImages } from "@/utils/html";
 import {
@@ -71,7 +71,7 @@ export default function WisdomCategoryScreen() {
   );
   const quotesQuery = useQuotes(50);
 
-  const { data: posts, isLoading, isError, refetch } = useMemo(() => {
+  const { data: posts, isLoading, isError, error, refetch } = useMemo(() => {
     if (isQuotes) return quotesQuery;
     return postsQuery;
   }, [isQuotes, postsQuery, quotesQuery]);
@@ -159,7 +159,10 @@ export default function WisdomCategoryScreen() {
       <>
         <Stack.Screen options={{ title: categoryName }} />
         <ErrorState
-          message={`Unable to load ${categoryName.toLowerCase()}. Please check your connection.`}
+          message={apiErrorMessage(
+            error,
+            `Unable to load ${categoryName.toLowerCase()}. Please check your connection.`
+          )}
           onRetry={() => refetch()}
         />
       </>
