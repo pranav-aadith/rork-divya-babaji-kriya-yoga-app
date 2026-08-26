@@ -43,11 +43,12 @@ export default function HomeScreen() {
   const currentQuote: Post | undefined = quotesData?.[quoteIndex];
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
       <Animated.View style={[styles.heroSection, { opacity: fadeAnim }]}>
         <LinearGradient
           colors={[Colors.light.primary, Colors.light.primaryLight]}
@@ -119,8 +120,10 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.bottomPadding} />
+      </ScrollView>
 
-      {/* Floating WhatsApp tap-to-chat widget */}
+      {/* Floating WhatsApp tap-to-chat widget — pinned to the bottom-right of
+          the screen, outside the ScrollView so it never scrolls with content */}
       <Animated.View
         style={[styles.chatWidgetWrap, { opacity: fadeAnim }]}
         pointerEvents="box-none"
@@ -141,7 +144,7 @@ export default function HomeScreen() {
           <Text style={styles.chatWidgetText}>Tap to Chat</Text>
         </TouchableOpacity>
       </Animated.View>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -262,7 +265,7 @@ const styles = StyleSheet.create({
   chatWidgetWrap: {
     position: "absolute",
     right: 16,
-    bottom: 100,
+    bottom: 24,
     zIndex: 100,
   },
   chatWidget: {
