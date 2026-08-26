@@ -41,7 +41,7 @@ function RootLayoutNav() {
   return (
     <Stack
       screenOptions={{
-        headerBackTitle: "",
+        headerBackButtonDisplayMode: "minimal",
         headerStyle: {
           backgroundColor: Colors.light.background,
         },

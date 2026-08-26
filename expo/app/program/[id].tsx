@@ -117,21 +117,36 @@ const BATCH_NAME_PATTERNS = [
   /sushumna\s+sparks/i,
 ];
 
+/** Headings/paragraphs with glued schedule fields ("Age : … Schedule : … Time : …") */
+const SCHEDULE_FIELD_PATTERN = /\b(age|schedule|time|language)\s*:/i;
+
+/** Pure time-range lines: "6:15 AM -6:30 AM IST", "8:30 PM -8:45PM PT", "7 PM -7:30 PM IST" */
+const TIME_RANGE_PATTERN =
+  /^\d{1,2}(:\d{2})?\s*[ap]\.?m\.?\s*[-–—]\s*\d{1,2}(:\d{2})?\s*[ap]\.?m\.?\s*(ist|pt|et|est|aest)?$/i;
+
 /** Filter out noise blocks (Spotify, duplicate labels, schedule info lines, batch names, URLs) */
 function filterNoiseBlocks(blocks: ContentBlock[]): ContentBlock[] {
   return blocks.filter((b) => {
     const lower = b.text.toLowerCase();
     const trimmed = b.text.trim();
-    // Individual schedule info lines: "Age:", "Schedule", "Language:" (with optional space before colon)
+    // Individual schedule info lines: "Age:", "Schedule", "Time:", "Language:" (with optional space before colon)
     const isScheduleLine =
       /^age\s*[:\-]/i.test(trimmed) ||
       /^schedule\s*[:\-]/i.test(trimmed) ||
+      /^time\s*[:\-]/i.test(trimmed) ||
       /^language\s*[:\-]/i.test(trimmed);
-    // Standalone register URLs (forms.gle / google forms)
-    const isRegisterUrl =
-      /^https?:\/\/(forms\.gle|docs\.google\.com\/forms)/i.test(trimmed);
+    // Registration link stubs and form URLs (standalone or embedded)
+    const isRegisterUrl = /(forms\.gle|docs\.google\.com\/forms)/i.test(trimmed);
+    const isRegisterLabel = /^registration\s+link$/i.test(trimmed);
     // Standalone batch name lines
     const isBatchName = BATCH_NAME_PATTERNS.some((p) => p.test(trimmed));
+    // Standalone time-range lines and headings embedding schedule fields
+    const isTimeRange = TIME_RANGE_PATTERN.test(trimmed);
+    const hasScheduleField = SCHEDULE_FIELD_PATTERN.test(trimmed);
+    // "Sushumna Sikshana India Programs" section heading and "India programs" stub
+    const isIndiaPrograms =
+      /sushumna\s+sikshana\s+india\s+programs/i.test(trimmed) ||
+      /^india\s+programs?$/i.test(trimmed);
     // Combined Age+Schedule+Language block (multi-line)
     const isScheduleInfo =
       /anudinam\s+balanandam/i.test(b.text) ||
@@ -151,7 +166,11 @@ function filterNoiseBlocks(blocks: ContentBlock[]): ContentBlock[] {
       !isScheduleInfo &&
       !isScheduleLine &&
       !isRegisterUrl &&
-      !isBatchName
+      !isRegisterLabel &&
+      !isBatchName &&
+      !isTimeRange &&
+      !hasScheduleField &&
+      !isIndiaPrograms
     );
   });
 }
