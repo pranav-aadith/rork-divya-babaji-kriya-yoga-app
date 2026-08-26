@@ -1,21 +1,39 @@
 import { Tabs } from "expo-router";
-import { Home, Sparkles, GraduationCap, Calendar } from "lucide-react-native";
+import { Sparkles, GraduationCap, Calendar } from "lucide-react-native";
 import React from "react";
 import { Platform } from "react-native";
+import Svg, { Path } from "react-native-svg";
 
 import Colors from "@/constants/colors";
+
+function LotusIcon({ size, color }: { size: number; color: string }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
+      <Path d="M12 3.2c-1.9 2.5-2.8 5.3-2.4 8 .3 1.7 1.1 2.9 2.4 3.7 1.3-.8 2.1-2 2.4-3.7.4-2.7-.5-5.5-2.4-8z" />
+      <Path d="M5.9 6c-.6 3.2.2 6 2.3 7.9.9.8 2.1 1.3 3.4 1.4-.4-2.8-1.8-5.2-4.2-7-.5-.4-1-.9-1.5-2.3z" />
+      <Path d="M18.1 6c.6 3.2-.2 6-2.3 7.9-.9.8-2.1 1.3-3.4 1.4.4-2.8 1.8-5.2 4.2-7 .5-.4 1-.9 1.5-2.3z" />
+      <Path d="M2.3 9.9c.8 2.9 2.5 4.9 5.1 6 1.3.5 2.6.6 4.1.4-1.5-2.3-3.6-4-6.3-4.9-1-.4-2-.8-2.9-1.5z" />
+      <Path d="M21.7 9.9c-.8 2.9-2.5 4.9-5.1 6-1.3.5-2.6.6-4.1.4 1.5-2.3 3.6-4 6.3-4.9 1-.4 2-.8 2.9-1.5z" />
+      <Path d="M3.2 15.6c2.5 2.3 5.5 3.4 8.8 3.4s6.3-1.1 8.8-3.4c-2.7 1-5.7 1.5-8.8 1.5s-6.1-.5-8.8-1.5z" />
+    </Svg>
+  );
+}
+
+const GOLD = "#C9921B";
+const BROWN = "#8A6A4F";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.light.primary,
-        tabBarInactiveTintColor: Colors.light.textLight,
+        tabBarActiveTintColor: GOLD,
+        tabBarInactiveTintColor: BROWN,
+        tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: Colors.light.cardBackground,
-          borderTopColor: Colors.light.border,
+          backgroundColor: "#FBF3E2",
+          borderTopColor: "rgba(201, 146, 27, 0.18)",
           paddingTop: 8,
-          height: Platform.OS === "ios" ? 88 : 68,
+          height: Platform.OS === "ios" ? 76 : 60,
         },
         tabBarLabelStyle: {
           fontSize: 11,
@@ -37,7 +55,7 @@ export default function TabLayout() {
         options={{
           title: "Home",
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <LotusIcon size={size} color={color} />,
         }}
       />
       <Tabs.Screen
