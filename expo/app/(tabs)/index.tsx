@@ -52,9 +52,9 @@ export default function HomeScreen() {
         >
           <View style={styles.heroContent}>
             <View style={styles.logoContainer}>
-              <View style={styles.logoCircle}>
+              <View style={styles.logoFrame}>
                 <Image
-                  source={require("../../assets/images/app-logo.png")}
+                  source={require("../../assets/images/gurus-banner.jpg")}
                   style={styles.logoImage}
                   resizeMode="cover"
                 />
@@ -176,13 +176,13 @@ const styles = StyleSheet.create({
   logoContainer: {
     marginBottom: 16,
   },
-  logoCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "#fff",
+  logoFrame: {
+    width: 252,
+    height: 168,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#c0392b",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
@@ -191,9 +191,8 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   logoImage: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 252,
+    height: 168,
   },
   heroTitle: {
     fontSize: 28,
