@@ -47,8 +47,7 @@ const WISDOM_CATEGORIES = [
     id: 14,
     name: "Videos",
     slug: "videos",
-    image:
-      "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=400&q=80",
+    image: require("@/assets/images/videos-tile-logo.jpg"),
   },
   {
     id: 39,
