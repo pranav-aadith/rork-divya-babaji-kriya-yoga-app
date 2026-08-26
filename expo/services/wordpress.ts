@@ -156,6 +156,24 @@ export interface Page {
 
 /* ── Helpers ─────────────────────────────────────────────────────── */
 
+/** Error thrown when the WordPress site is unreachable or in maintenance mode */
+export class SiteUnavailableError extends Error {}
+
+/**
+ * Validate an API response, throwing a descriptive error on failure.
+ * A 503 means the site is in maintenance mode — surfaced as a distinct
+ * error so screens can show an accurate message.
+ */
+async function ensureOk(res: Response, what: string): Promise<void> {
+  if (res.ok) return;
+  if (res.status === 503) {
+    throw new SiteUnavailableError(
+      "The website is temporarily unavailable for maintenance. Please try again later."
+    );
+  }
+  throw new Error(`Failed to fetch ${what}: ${res.status}`);
+}
+
 /** Strip HTML tags from a rendered string */
 function stripHtml(html: string): string {
   if (!html) return "";
@@ -311,7 +329,7 @@ export async function fetchPosts(
   }
 
   const res = await fetch(`${API_BASE}/posts?${search.toString()}`);
-  if (!res.ok) throw new Error(`Failed to fetch posts: ${res.status}`);
+  await ensureOk(res, "posts");
   const data: WPPost[] = await res.json();
   return data.map(normalizePost);
 }
@@ -319,7 +337,7 @@ export async function fetchPosts(
 /** Fetch a single post by ID with embedded data */
 export async function fetchPostById(id: number): Promise<Post> {
   const res = await fetch(`${API_BASE}/posts/${id}?_embed=true`);
-  if (!res.ok) throw new Error(`Failed to fetch post ${id}: ${res.status}`);
+  await ensureOk(res, `post ${id}`);
   const data: WPPost = await res.json();
   return normalizePost(data);
 }
@@ -329,7 +347,7 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
   const res = await fetch(
     `${API_BASE}/posts?_embed=true&slug=${encodeURIComponent(slug)}`
   );
-  if (!res.ok) throw new Error(`Failed to fetch post by slug: ${res.status}`);
+  await ensureOk(res, "post by slug");
   const data: WPPost[] = await res.json();
   return data.length > 0 ? normalizePost(data[0]) : null;
 }
@@ -350,7 +368,7 @@ export async function fetchPages(params?: {
   if (params?.search) search.set("search", params.search);
 
   const res = await fetch(`${API_BASE}/pages?${search.toString()}`);
-  if (!res.ok) throw new Error(`Failed to fetch pages: ${res.status}`);
+  await ensureOk(res, "pages");
   const data: WPPage[] = await res.json();
   return data.map(normalizePage);
 }
@@ -358,7 +376,7 @@ export async function fetchPages(params?: {
 /** Fetch a single page by ID with embedded data */
 export async function fetchPageById(id: number): Promise<Page> {
   const res = await fetch(`${API_BASE}/pages/${id}?_embed=true`);
-  if (!res.ok) throw new Error(`Failed to fetch page ${id}: ${res.status}`);
+  await ensureOk(res, `page ${id}`);
   const data: WPPage = await res.json();
   return normalizePage(data);
 }
@@ -368,7 +386,7 @@ export async function fetchPageBySlug(slug: string): Promise<Page | null> {
   const res = await fetch(
     `${API_BASE}/pages?_embed=true&slug=${encodeURIComponent(slug)}`
   );
-  if (!res.ok) throw new Error(`Failed to fetch page by slug: ${res.status}`);
+  await ensureOk(res, "page by slug");
   const data: WPPage[] = await res.json();
   return data.length > 0 ? normalizePage(data[0]) : null;
 }
@@ -376,14 +394,14 @@ export async function fetchPageBySlug(slug: string): Promise<Page | null> {
 /** Fetch all categories */
 export async function fetchCategories(): Promise<WPCategory[]> {
   const res = await fetch(`${API_BASE}/categories?per_page=100`);
-  if (!res.ok) throw new Error(`Failed to fetch categories: ${res.status}`);
+  await ensureOk(res, "categories");
   return res.json();
 }
 
 /** Fetch all tags */
 export async function fetchTags(): Promise<WPTag[]> {
   const res = await fetch(`${API_BASE}/tags?per_page=100`);
-  if (!res.ok) throw new Error(`Failed to fetch tags: ${res.status}`);
+  await ensureOk(res, "tags");
   return res.json();
 }
 
@@ -406,7 +424,7 @@ export async function fetchPageBySlugLight(slug: string): Promise<Page | null> {
   );
   search.set("per_page", "1");
   const res = await fetch(`${API_BASE}/pages?${search.toString()}`);
-  if (!res.ok) throw new Error(`Failed to fetch page ${slug}: ${res.status}`);
+  await ensureOk(res, `page ${slug}`);
   const data: WPPage[] = await res.json();
   return data.length > 0 ? normalizePage(data[0]) : null;
 }
