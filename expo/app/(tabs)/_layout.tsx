@@ -8,7 +8,16 @@ import Colors from "@/constants/colors";
 
 function LotusIcon({ size, color }: { size: number; color: string }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <Path d="M12 3.2c-1.9 2.5-2.8 5.3-2.4 8 .3 1.7 1.1 2.9 2.4 3.7 1.3-.8 2.1-2 2.4-3.7.4-2.7-.5-5.5-2.4-8z" />
       <Path d="M5.9 6c-.6 3.2.2 6 2.3 7.9.9.8 2.1 1.3 3.4 1.4-.4-2.8-1.8-5.2-4.2-7-.5-.4-1-.9-1.5-2.3z" />
       <Path d="M18.1 6c.6 3.2-.2 6-2.3 7.9-.9.8-2.1 1.3-3.4 1.4.4-2.8 1.8-5.2 4.2-7 .5-.4 1-.9 1.5-2.3z" />
@@ -30,8 +39,8 @@ export default function TabLayout() {
         tabBarInactiveTintColor: BROWN,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: "#FBF3E2",
-          borderTopColor: "rgba(201, 146, 27, 0.18)",
+          backgroundColor: "#FFFEFB",
+          borderTopColor: "rgba(201, 146, 27, 0.15)",
           paddingTop: 8,
           height: Platform.OS === "ios" ? 76 : 60,
         },
