@@ -50,7 +50,11 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={["#C96A2E", "#E59B60", "#F7E4C3"]}
+      locations={[0, 0.55, 1]}
+      style={styles.container}
+    >
       {/* Soft light glow behind the banner, like the reference */}
       <View style={styles.glowWrap} pointerEvents="none">
         <View style={styles.glowCircle} />
@@ -116,7 +120,7 @@ export default function HomeScreen() {
 
         <View style={styles.bottomPadding} />
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
