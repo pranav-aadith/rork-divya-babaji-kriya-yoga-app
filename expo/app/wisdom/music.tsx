@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   Linking,
   Alert,
   Animated,
@@ -12,7 +11,7 @@ import {
 } from "react-native";
 import { Stack } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Play, Music2, Headphones } from "lucide-react-native";
+import { Play, Headphones } from "lucide-react-native";
 import Colors from "@/constants/colors";
 
 const SOUNDCLOUD_URL = "https://soundcloud.com/divyababaji-kriyayoga";
@@ -208,28 +207,6 @@ export default function MusicScreen() {
           </Animated.View>
         </View>
 
-        <View style={styles.introSection}>
-          <View style={styles.introIconWrap}>
-            <Music2 size={20} color={Colors.light.primary} />
-          </View>
-          <Text style={styles.introTitle}>Guided Meditation Audio</Text>
-          <Text style={styles.introText}>
-            Explore a collection of guided Sushumna Kriya meditations, chanting,
-            and kriya instruction audio on the Foundation&apos;s SoundCloud. These
-            recordings support your daily practice and deepen your journey with
-            Sushumna Kriya Yoga.
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          style={styles.secondaryButton}
-          activeOpacity={0.85}
-          onPress={openSoundCloud}
-        >
-          <Headphones size={20} color={Colors.light.primary} />
-          <Text style={styles.secondaryButtonText}>Open SoundCloud</Text>
-        </TouchableOpacity>
-
         <View style={styles.bottomPadding} />
       </ScrollView>
     </>
@@ -353,52 +330,6 @@ const styles = StyleSheet.create({
   profileHandle: {
     fontSize: 14,
     color: "rgba(255,255,255,0.85)",
-  },
-  introSection: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  introIconWrap: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(224, 123, 57, 0.1)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 14,
-  },
-  introTitle: {
-    fontSize: 20,
-    fontWeight: "700" as const,
-    color: Colors.light.text,
-    marginBottom: 10,
-  },
-  introText: {
-    fontSize: 16,
-    color: Colors.light.textSecondary,
-    lineHeight: 26,
-  },
-  secondaryButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    marginHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 16,
-    backgroundColor: Colors.light.cardBackground,
-    borderWidth: 1,
-    borderColor: Colors.light.border ?? "rgba(0,0,0,0.08)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  secondaryButtonText: {
-    fontSize: 16,
-    fontWeight: "600" as const,
-    color: Colors.light.primary,
   },
   bottomPadding: {
     height: 20,
