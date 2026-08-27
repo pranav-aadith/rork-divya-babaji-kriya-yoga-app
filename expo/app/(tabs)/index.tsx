@@ -8,9 +8,10 @@ import {
   Animated,
   TouchableOpacity,
   Linking,
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Path, Circle, Ellipse } from "react-native-svg";
 import Colors from "@/constants/colors";
 import { useQuotes } from "@/hooks/useWordPress";
 import { InlineLoading } from "@/components/LoadingStates";
@@ -18,8 +19,38 @@ import type { Post } from "@/services/wordpress";
 
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
 
-/** Hero band cropped from the reference artwork (1545x1150 source region) */
-const HERO_ASPECT = 1545 / 1150;
+const BANNER_WIDTH = Math.min(Dimensions.get("window").width - 88, 300);
+
+/** Subtle mandala pattern behind the hero, like the reference */
+function MandalaBackdrop() {
+  const petals = Array.from({ length: 12 }, (_, i) => i * 30);
+  return (
+    <Svg
+      width={380}
+      height={380}
+      viewBox="0 0 200 200"
+      style={styles.mandala}
+      pointerEvents="none"
+    >
+      <Circle cx={100} cy={100} r={96} stroke="rgba(255,255,255,0.28)" strokeWidth={0.8} fill="none" />
+      <Circle cx={100} cy={100} r={72} stroke="rgba(255,255,255,0.22)" strokeWidth={0.8} fill="none" />
+      <Circle cx={100} cy={100} r={48} stroke="rgba(255,255,255,0.18)" strokeWidth={0.8} fill="none" />
+      {petals.map((angle) => (
+        <Ellipse
+          key={angle}
+          cx={100}
+          cy={52}
+          rx={9}
+          ry={24}
+          stroke="rgba(255,255,255,0.2)"
+          strokeWidth={0.8}
+          fill="none"
+          transform={`rotate(${angle} 100 100)`}
+        />
+      ))}
+    </Svg>
+  );
+}
 
 export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
@@ -51,12 +82,13 @@ export default function HomeScreen() {
 
   return (
     <LinearGradient
-      colors={["#F1A377", "#F6BE97", "#FBD8BC"]}
-      locations={[0, 0.5, 1]}
+      colors={["#C96A2E", "#E59B60", "#F7E4C3"]}
+      locations={[0, 0.55, 1]}
       style={styles.container}
     >
-      {/* Soft bokeh lights behind the content */}
+      {/* Glow, mandala pattern and bokeh lights behind the content */}
       <View style={styles.glowWrap} pointerEvents="none">
+        <MandalaBackdrop />
         <View style={styles.glowCircle} />
         <View style={styles.glowCircleSmall} />
         <View style={styles.bokeh1} />
@@ -72,11 +104,14 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Animated.View style={[styles.heroSection, { opacity: fadeAnim }]}>
-          <Image
-            source={require("../../assets/images/home-hero.jpg")}
-            style={styles.heroImage}
-            resizeMode="cover"
-          />
+          <View style={[styles.bannerFrame, { width: BANNER_WIDTH }]}>
+            <Image
+              source={require("../../assets/images/gurus-banner.jpg")}
+              style={[styles.bannerImage, { width: BANNER_WIDTH }]}
+              resizeMode="cover"
+            />
+          </View>
+          <Text style={styles.heroTitle}>Sushumna Kriya Yoga</Text>
           <Text style={styles.heroSubtitle}>Awaken Your Inner Light</Text>
         </Animated.View>
 
@@ -137,7 +172,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   contentContainer: {
-    paddingTop: 0,
+    paddingTop: 64,
     paddingHorizontal: 24,
     paddingBottom: 32,
     alignItems: "stretch",
@@ -215,22 +250,37 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     alignItems: "center",
-    marginHorizontal: -24,
   },
-  heroImage: {
-    width: "100%",
-    aspectRatio: HERO_ASPECT,
+  bannerFrame: {
+    borderRadius: 22,
+    borderWidth: 3,
+    borderColor: "rgba(255, 255, 255, 0.85)",
+    overflow: "hidden",
+    backgroundColor: "#c0392b",
+    shadowColor: "#7A3B12",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 18,
+    elevation: 10,
+  },
+  bannerImage: {
+    height: (BANNER_WIDTH * 2) / 3,
+  },
+  heroTitle: {
+    fontSize: 30,
+    fontWeight: "800" as const,
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 20,
+    textShadowColor: "rgba(122, 59, 18, 0.35)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
   },
   heroSubtitle: {
-    fontSize: 15,
-    fontWeight: "600" as const,
-    color: "#FFFFFF",
+    fontSize: 16,
+    color: "rgba(255, 244, 228, 0.95)",
     textAlign: "center",
-    marginTop: 14,
-    letterSpacing: 0.5,
-    textShadowColor: "rgba(160, 82, 30, 0.35)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    marginTop: 6,
   },
   quoteSection: {
     marginTop: 36,
