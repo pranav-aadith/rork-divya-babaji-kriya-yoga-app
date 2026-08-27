@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   ImageBackground,
   Animated,
   TouchableOpacity,
@@ -18,8 +17,8 @@ import { InlineLoading } from "@/components/LoadingStates";
 import type { Post } from "@/services/wordpress";
 
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
-
-const BANNER_WIDTH = Math.min(Dimensions.get("window").width - 88, 300);
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const ART_CLEARANCE = Math.round(SCREEN_HEIGHT * 0.42);
 
 export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
@@ -36,7 +35,6 @@ export default function HomeScreen() {
     }).start();
   }, [fadeAnim]);
 
-  // Pick a random quote once data loads
   useEffect(() => {
     if (quotesData && quotesData.length > 0) {
       setQuoteIndex(Math.floor(Math.random() * quotesData.length));
@@ -51,7 +49,7 @@ export default function HomeScreen() {
 
   return (
     <ImageBackground
-      source={require("../../assets/images/home-peach-mandala-bg.png")}
+      source={require("../../assets/images/home-peach-gurus-bg.png")}
       style={styles.container}
       resizeMode="cover"
     >
@@ -60,17 +58,7 @@ export default function HomeScreen() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View style={[styles.heroSection, { opacity: fadeAnim }]}>
-          <View style={[styles.bannerFrame, { width: BANNER_WIDTH }]}>
-            <Image
-              source={require("../../assets/images/gurus-banner.jpg")}
-              style={[styles.bannerImage, { width: BANNER_WIDTH }]}
-              resizeMode="cover"
-            />
-          </View>
-          <Text style={styles.heroTitle}>Sushumna Kriya Yoga</Text>
-          <Text style={styles.heroSubtitle}>Awaken Your Inner Light</Text>
-        </Animated.View>
+        <View style={styles.artClearance} />
 
         <Animated.View style={[styles.quoteSection, { opacity: fadeAnim }]}>
           <View style={styles.quoteCard}>
@@ -94,7 +82,6 @@ export default function HomeScreen() {
           </View>
         </Animated.View>
 
-        {/* Connect with a Guide — WhatsApp pill */}
         <Animated.View style={[styles.guideWrap, { opacity: fadeAnim }]}>
           <TouchableOpacity
             style={styles.guideButton}
@@ -111,8 +98,6 @@ export default function HomeScreen() {
             <Text style={styles.guideText}>Connect with a Guide</Text>
           </TouchableOpacity>
         </Animated.View>
-
-        <View style={styles.bottomPadding} />
       </ScrollView>
     </ImageBackground>
   );
@@ -124,47 +109,15 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   contentContainer: {
-    paddingTop: 64,
+    flexGrow: 1,
     paddingHorizontal: 24,
-    paddingBottom: 32,
-    alignItems: "stretch",
+    paddingBottom: 28,
   },
-  heroSection: {
-    alignItems: "center",
-  },
-  bannerFrame: {
-    borderRadius: 22,
-    borderWidth: 3,
-    borderColor: "rgba(255, 255, 255, 0.85)",
-    overflow: "hidden",
-    backgroundColor: "#c0392b",
-    shadowColor: "#7A3B12",
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 18,
-    elevation: 10,
-  },
-  bannerImage: {
-    height: (BANNER_WIDTH * 2) / 3,
-  },
-  heroTitle: {
-    fontSize: 30,
-    fontWeight: "800" as const,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 20,
-    textShadowColor: "rgba(122, 59, 18, 0.35)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
-  },
-  heroSubtitle: {
-    fontSize: 16,
-    color: "rgba(255, 244, 228, 0.95)",
-    textAlign: "center",
-    marginTop: 6,
+  artClearance: {
+    height: ART_CLEARANCE,
   },
   quoteSection: {
-    marginTop: 36,
+    marginTop: 8,
   },
   quoteCard: {
     backgroundColor: "#FFFEFA",
@@ -204,7 +157,8 @@ const styles = StyleSheet.create({
     fontWeight: "600" as const,
   },
   guideWrap: {
-    marginTop: 56,
+    marginTop: "auto" as const,
+    paddingTop: 28,
     alignItems: "center",
   },
   guideButton: {
@@ -236,8 +190,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700" as const,
     color: "#5B4632",
-  },
-  bottomPadding: {
-    height: 24,
   },
 });
