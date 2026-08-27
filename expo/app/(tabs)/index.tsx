@@ -9,7 +9,7 @@ import {
   Linking,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { Instagram, Youtube } from "lucide-react-native";
+import { Facebook, Instagram, Youtube } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useQuotes } from "@/hooks/useWordPress";
 import { InlineLoading } from "@/components/LoadingStates";
@@ -19,6 +19,12 @@ const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
 const PEACH = "#F6D2B0";
 
 const SOCIALS: { id: string; url: string; color: string; label: string }[] = [
+  {
+    id: "facebook",
+    url: "https://www.facebook.com/DivyaBabajiSushumnaKriyayoga",
+    color: "#1877F2",
+    label: "Facebook",
+  },
   {
     id: "whatsapp",
     url: "https://www.whatsapp.com/channel/0029Va9QlNp65yDKxRfezV2M",
@@ -46,6 +52,9 @@ const SOCIALS: { id: string; url: string; color: string; label: string }[] = [
 ];
 
 function SocialIcon({ id, color }: { id: string; color: string }) {
+  if (id === "facebook") {
+    return <Facebook size={20} color={color} strokeWidth={2.2} />;
+  }
   if (id === "instagram") {
     return <Instagram size={19} color={color} strokeWidth={2.2} />;
   }
