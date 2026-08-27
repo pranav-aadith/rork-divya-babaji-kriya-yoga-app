@@ -5,12 +5,12 @@ import {
   StyleSheet,
   ScrollView,
   Image,
+  ImageBackground,
   Animated,
   TouchableOpacity,
   Linking,
   Dimensions,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
 import Colors from "@/constants/colors";
 import { useQuotes } from "@/hooks/useWordPress";
@@ -50,17 +50,11 @@ export default function HomeScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={["#C96A2E", "#E59B60", "#F7E4C3"]}
-      locations={[0, 0.55, 1]}
+    <ImageBackground
+      source={require("../../assets/images/home-peach-mandala-bg.png")}
       style={styles.container}
+      resizeMode="cover"
     >
-      {/* Soft light glow behind the banner, like the reference */}
-      <View style={styles.glowWrap} pointerEvents="none">
-        <View style={styles.glowCircle} />
-        <View style={styles.glowCircleSmall} />
-      </View>
-
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
@@ -120,7 +114,7 @@ export default function HomeScreen() {
 
         <View style={styles.bottomPadding} />
       </ScrollView>
-    </LinearGradient>
+    </ImageBackground>
   );
 }
 
@@ -134,26 +128,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 32,
     alignItems: "stretch",
-  },
-  glowWrap: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-  },
-  glowCircle: {
-    position: "absolute",
-    top: 140,
-    width: 420,
-    height: 420,
-    borderRadius: 210,
-    backgroundColor: "rgba(255, 236, 200, 0.55)",
-  },
-  glowCircleSmall: {
-    position: "absolute",
-    top: 40,
-    width: 260,
-    height: 260,
-    borderRadius: 130,
-    backgroundColor: "rgba(255, 214, 160, 0.35)",
   },
   heroSection: {
     alignItems: "center",
