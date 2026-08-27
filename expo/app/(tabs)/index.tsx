@@ -3,12 +3,10 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  ImageBackground,
+  Image,
   Animated,
   TouchableOpacity,
   Linking,
-  Dimensions,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import Colors from "@/constants/colors";
@@ -17,8 +15,7 @@ import { InlineLoading } from "@/components/LoadingStates";
 import type { Post } from "@/services/wordpress";
 
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const ART_CLEARANCE = Math.round(SCREEN_HEIGHT * 0.42);
+const PEACH = "#F6D2B0";
 
 export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
@@ -48,18 +45,15 @@ export default function HomeScreen() {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/images/home-peach-gurus-bg.png")}
-      style={styles.container}
-      resizeMode="cover"
-    >
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.artClearance} />
+    <View style={styles.container}>
+      <Image
+        source={require("../../assets/images/home-peach-gurus-bg.png")}
+        style={styles.art}
+        resizeMode="contain"
+        accessibilityIgnoresInvertColors
+      />
 
+      <View style={styles.overlay} pointerEvents="box-none">
         <Animated.View style={[styles.quoteSection, { opacity: fadeAnim }]}>
           <View style={styles.quoteCard}>
             <View style={styles.quoteIcon}>
@@ -98,33 +92,36 @@ export default function HomeScreen() {
             <Text style={styles.guideText}>Connect with a Guide</Text>
           </TouchableOpacity>
         </Animated.View>
-      </ScrollView>
-    </ImageBackground>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "transparent",
+    backgroundColor: PEACH,
   },
-  contentContainer: {
-    flexGrow: 1,
+  art: {
+    ...StyleSheet.absoluteFillObject,
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: "flex-end",
     paddingHorizontal: 24,
-    paddingBottom: 28,
-  },
-  artClearance: {
-    height: ART_CLEARANCE,
+    paddingBottom: 20,
   },
   quoteSection: {
-    marginTop: 8,
+    marginBottom: 20,
   },
   quoteCard: {
     backgroundColor: "#FFFEFA",
     borderRadius: 24,
-    paddingVertical: 28,
-    paddingHorizontal: 24,
-    paddingTop: 36,
+    paddingVertical: 22,
+    paddingHorizontal: 22,
+    paddingTop: 30,
     shadowColor: "#7A3B12",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
@@ -133,22 +130,22 @@ const styles = StyleSheet.create({
   },
   quoteIcon: {
     position: "absolute",
-    top: 10,
-    left: 18,
+    top: 6,
+    left: 16,
   },
   quoteIconText: {
-    fontSize: 56,
+    fontSize: 52,
     color: Colors.light.primaryLight,
     fontWeight: "700" as const,
     opacity: 0.4,
-    lineHeight: 64,
+    lineHeight: 60,
   },
   quoteText: {
-    fontSize: 17,
-    lineHeight: 27,
+    fontSize: 16,
+    lineHeight: 25,
     color: Colors.light.text,
     textAlign: "center",
-    marginBottom: 14,
+    marginBottom: 12,
   },
   quoteAuthor: {
     fontSize: 14,
@@ -157,8 +154,6 @@ const styles = StyleSheet.create({
     fontWeight: "600" as const,
   },
   guideWrap: {
-    marginTop: "auto" as const,
-    paddingTop: 28,
     alignItems: "center",
   },
   guideButton: {
