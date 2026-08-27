@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Sparkles, GraduationCap, Calendar } from "lucide-react-native";
+import { Sparkles, GraduationCap, Calendar, Heart } from "lucide-react-native";
 import React from "react";
 import { Platform } from "react-native";
 import Svg, { Path } from "react-native-svg";
@@ -77,6 +77,13 @@ export default function TabLayout() {
         options={{
           title: "Events",
           tabBarIcon: ({ color, size }) => <Calendar size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="favorites"
+        options={{
+          title: "Favorites",
+          tabBarIcon: ({ color, size }) => <Heart size={size} color={color} />,
         }}
       />
     </Tabs>

@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Colors from "@/constants/colors";
 import { LanguageProvider } from "@/context/language";
+import { FavoritesProvider } from "@/context/favorites";
 import {
   fetchCategories,
   fetchEventPosts,
@@ -189,9 +190,11 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          {isReady ? <RootLayoutNav /> : null}
-        </GestureHandlerRootView>
+        <FavoritesProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            {isReady ? <RootLayoutNav /> : null}
+          </GestureHandlerRootView>
+        </FavoritesProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );

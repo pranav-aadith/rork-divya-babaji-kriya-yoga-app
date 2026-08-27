@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,24 @@ import {
   Animated,
   TouchableOpacity,
   Linking,
+  Share,
+  ActivityIndicator,
 } from "react-native";
-import Svg, { Path } from "react-native-svg";
-import { Facebook, Instagram, Youtube } from "lucide-react-native";
+import Svg, {
+  Path,
+  Text as SvgText,
+  Rect,
+  Defs,
+  Stop,
+  LinearGradient as SvgLinearGradient,
+  Image as SvgImage,
+} from "react-native-svg";
+import { Facebook, Instagram, Youtube, Heart, Share2 } from "lucide-react-native";
+import * as Haptics from "expo-haptics";
+import { File, Paths } from "expo-file-system";
 import Colors from "@/constants/colors";
 import { QUOTE_LANGUAGES, useLanguage } from "@/context/language";
+import { useFavorites } from "@/context/favorites";
 import { useQuotes } from "@/hooks/useWordPress";
 import { detectLanguage, type LanguageFilter } from "@/utils/language";
 import { InlineLoading } from "@/components/LoadingStates";
@@ -19,6 +32,41 @@ import type { Post } from "@/services/wordpress";
 
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
 const PEACH = "#F6D2B0";
+
+/* ── Share card (quote over the artwork) ─────────────────────────── */
+
+const SHARE_W = 1080;
+const SHARE_H = 1350;
+const SHARE_FONT = 46;
+const SHARE_LINE_H = 68;
+const SHARE_MAX_CHARS = 34;
+const SHARE_MAX_LINES = 10;
+const ARTWORK_URI = Image.resolveAssetSource(
+  require("../../assets/images/home-peach-gurus-bg.png")
+).uri;
+
+type SvgHandle = React.ComponentRef<typeof Svg>;
+
+/** Word-wrap quote text into SVG-friendly lines, capped with an ellipsis. */
+function wrapQuoteLines(text: string): string[] {
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let current = "";
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length > SHARE_MAX_CHARS && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = candidate;
+    }
+  }
+  if (current) lines.push(current);
+  if (lines.length > SHARE_MAX_LINES) {
+    return [...lines.slice(0, SHARE_MAX_LINES - 1), `${lines[SHARE_MAX_LINES - 1]}…`];
+  }
+  return lines;
+}
 
 const SOCIALS: { id: string; url: string; color: string; label: string }[] = [
   {
@@ -81,7 +129,11 @@ export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
 
   const { preferredLanguage, setPreferredLanguage } = useLanguage();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const { data: quotesData, isLoading: quotesLoading } = useQuotes(100);
+
+  const [isSharing, setIsSharing] = useState(false);
+  const shareSvgRef = useRef<SvgHandle | null>(null);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -121,6 +173,51 @@ export default function HomeScreen() {
     );
     return languagePool[dayOfYear % languagePool.length].post;
   }, [languagePool]);
+
+  const isFav = currentQuote ? isFavorite(currentQuote.id) : false;
+
+  const quoteLines = useMemo(
+    () => (currentQuote ? wrapQuoteLines(currentQuote.title) : []),
+    [currentQuote]
+  );
+
+  /** Vertical anchor of the quote block on the share card (bottom-weighted). */
+  const quoteStartY = useMemo(
+    () => Math.max(480, 1080 - (quoteLines.length - 1) * SHARE_LINE_H),
+    [quoteLines]
+  );
+
+  const onToggleFavorite = () => {
+    if (!currentQuote) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    toggleFavorite({ id: currentQuote.id, title: currentQuote.title });
+  };
+
+  /** Render the quote over the artwork to a PNG and open the share sheet. */
+  const shareQuoteImage = async () => {
+    if (!currentQuote || isSharing) return;
+    setIsSharing(true);
+    const shareText = `"${currentQuote.title}" — Sushumna Kriya Yoga`;
+    try {
+      const svg = shareSvgRef.current;
+      if (!svg) throw new Error("Share card not ready");
+      const data = await new Promise<string>((resolve, reject) => {
+        svg.toDataURL((base64: string) => resolve(base64), {
+          width: SHARE_W,
+          height: SHARE_H,
+        });
+      });
+      const base64 = data.replace(/^data:image\/png;base64,/, "");
+      const file = new File(Paths.cache, `daily-quote-${Date.now()}.png`);
+      file.write(base64, { encoding: "base64" });
+      await Share.share({ url: file.uri, message: shareText });
+    } catch {
+      // Fall back to a plain text share if image rendering fails.
+      Share.share({ message: shareText }).catch(() => {});
+    } finally {
+      setIsSharing(false);
+    }
+  };
 
   const openWhatsApp = () => {
     Linking.openURL(WHATSAPP_URL).catch(() => {});
@@ -183,6 +280,45 @@ export default function HomeScreen() {
                     ? "— Sushumna Kriya Yoga Foundation"
                     : "— Pujya Guru Mahavatar Babaji"}
                 </Text>
+                {currentQuote ? (
+                  <View style={styles.quoteActions}>
+                    <TouchableOpacity
+                      style={styles.quoteAction}
+                      activeOpacity={0.8}
+                      accessibilityRole="button"
+                      accessibilityLabel={
+                        isFav ? "Remove from favorites" : "Save to favorites"
+                      }
+                      onPress={onToggleFavorite}
+                    >
+                      <Heart
+                        size={18}
+                        color={isFav ? "#E05555" : "#7A5B3E"}
+                        fill={isFav ? "#E05555" : "none"}
+                      />
+                      <Text style={styles.quoteActionText}>
+                        {isFav ? "Saved" : "Save"}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.quoteAction}
+                      activeOpacity={0.8}
+                      disabled={isSharing}
+                      accessibilityRole="button"
+                      accessibilityLabel="Share the daily quote"
+                      onPress={shareQuoteImage}
+                    >
+                      {isSharing ? (
+                        <ActivityIndicator size="small" color="#7A5B3E" />
+                      ) : (
+                        <Share2 size={18} color="#7A5B3E" />
+                      )}
+                      <Text style={styles.quoteActionText}>
+                        {isSharing ? "Preparing…" : "Share"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : null}
               </>
             )}
           </View>
@@ -220,6 +356,73 @@ export default function HomeScreen() {
           ))}
         </Animated.View>
       </View>
+
+      {/* Off-screen share card: the quote rendered over the artwork as SVG,
+          exported to PNG when the user taps Share. */}
+      {currentQuote ? (
+        <Svg
+          ref={shareSvgRef}
+          width={SHARE_W}
+          height={SHARE_H}
+          viewBox={`0 0 ${SHARE_W} ${SHARE_H}`}
+          style={styles.shareCard}
+          pointerEvents="none"
+        >
+          <Defs>
+            <SvgLinearGradient id="shareScrim" x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0.3" stopColor="#5A2D0A" stopOpacity="0" />
+              <Stop offset="1" stopColor="#5A2D0A" stopOpacity="0.62" />
+            </SvgLinearGradient>
+          </Defs>
+          <SvgImage
+            href={ARTWORK_URI}
+            width={SHARE_W}
+            height={SHARE_H}
+            preserveAspectRatio="xMidYMid slice"
+          />
+          <Rect
+            x={0}
+            y={0}
+            width={SHARE_W}
+            height={SHARE_H}
+            fill="url(#shareScrim)"
+          />
+          {quoteLines.map((line, index) => (
+            <SvgText
+              key={`${line}-${index}`}
+              x={SHARE_W / 2}
+              y={quoteStartY + index * SHARE_LINE_H}
+              fill="#FFFFFF"
+              fontSize={SHARE_FONT}
+              fontWeight="600"
+              textAnchor="middle"
+            >
+              {line}
+            </SvgText>
+          ))}
+          <SvgText
+            x={SHARE_W / 2}
+            y={quoteStartY + quoteLines.length * SHARE_LINE_H + 20}
+            fill="#FFE9CE"
+            fontSize={32}
+            fontWeight="500"
+            textAnchor="middle"
+          >
+            — Sushumna Kriya Yoga Foundation
+          </SvgText>
+          <SvgText
+            x={SHARE_W / 2}
+            y={SHARE_H - 56}
+            fill="rgba(255, 255, 255, 0.92)"
+            fontSize={28}
+            letterSpacing={8}
+            fontWeight="700"
+            textAnchor="middle"
+          >
+            SUSHUMNA KRIYA YOGA
+          </SvgText>
+        </Svg>
+      ) : null}
     </View>
   );
 }
@@ -306,6 +509,31 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
     textAlign: "center",
     fontWeight: "600" as const,
+  },
+  quoteActions: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 28,
+    marginTop: 16,
+  },
+  quoteAction: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  quoteActionText: {
+    fontSize: 13,
+    fontWeight: "600" as const,
+    color: "#7A5B3E",
+  },
+  shareCard: {
+    position: "absolute",
+    top: -20000,
+    left: 0,
+    width: SHARE_W,
+    height: SHARE_H,
   },
   guideWrap: {
     alignItems: "center",
