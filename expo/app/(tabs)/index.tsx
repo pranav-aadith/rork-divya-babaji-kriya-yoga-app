@@ -27,12 +27,15 @@ import Colors from "@/constants/colors";
 import { QUOTE_LANGUAGES, useLanguage } from "@/context/language";
 import { useFavorites } from "@/context/favorites";
 import { useQuotes } from "@/hooks/useWordPress";
+import { useQuoteText } from "@/hooks/useQuoteText";
 import { detectLanguage, type LanguageFilter } from "@/utils/language";
 import { InlineLoading } from "@/components/LoadingStates";
 import type { Post } from "@/services/wordpress";
 
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
 const PEACH = "#F6D2B0";
+const FALLBACK_QUOTE =
+  "Attaining inner peace can bring peace to the world; attaining inner harmony can bring harmony to the world; attaining inner bliss can bring glory to the entire world.";
 
 /* ── Share card (quote over the artwork) ─────────────────────────── */
 
@@ -177,9 +180,16 @@ export default function HomeScreen() {
 
   const isFav = currentQuote ? isFavorite(currentQuote.id) : false;
 
+  // Quote posts are greeting-card images — the text is read from the image
+  // with a vision model; fall back to the post title while loading / on error.
+  const { data: ocrText } = useQuoteText(currentQuote);
+  const quoteDisplay = currentQuote
+    ? (ocrText && ocrText.trim()) || currentQuote.title
+    : FALLBACK_QUOTE;
+
   const quoteLines = useMemo(
-    () => (currentQuote ? wrapQuoteLines(currentQuote.title) : []),
-    [currentQuote]
+    () => wrapQuoteLines(quoteDisplay),
+    [quoteDisplay]
   );
 
   /** Vertical anchor of the quote block on the share card (bottom-weighted). */
@@ -191,14 +201,14 @@ export default function HomeScreen() {
   const onToggleFavorite = () => {
     if (!currentQuote) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    toggleFavorite({ id: currentQuote.id, title: currentQuote.title });
+    toggleFavorite({ id: currentQuote.id, title: quoteDisplay });
   };
 
   /** Render the quote over the artwork to a PNG and open the share sheet. */
   const shareQuoteImage = async () => {
     if (!currentQuote || isSharing) return;
     setIsSharing(true);
-    const shareText = `"${currentQuote.title}" — Sushumna Kriya Yoga`;
+    const shareText = `"${quoteDisplay}" — Sushumna Kriya Yoga`;
     try {
       const svg = shareSvgRef.current;
       if (!svg) throw new Error("Share card not ready");
@@ -273,9 +283,7 @@ export default function HomeScreen() {
               <InlineLoading message="Loading daily inspiration…" />
             ) : (
               <>
-                <Text style={styles.quoteText}>
-                  {currentQuote ? currentQuote.title : "Attaining inner peace can bring peace to the world; attaining inner harmony can bring harmony to the world; attaining inner bliss can bring glory to the entire world."}
-                </Text>
+                <Text style={styles.quoteText}>{quoteDisplay}</Text>
                 <Text style={styles.quoteAuthor}>
                   {currentQuote
                     ? "— Sushumna Kriya Yoga Foundation"
