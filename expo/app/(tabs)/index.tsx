@@ -21,6 +21,7 @@ import Svg, {
 } from "react-native-svg";
 import { Facebook, Instagram, Youtube, Heart, Share2 } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
+import { Asset } from "expo-asset";
 import { File, Paths } from "expo-file-system";
 import Colors from "@/constants/colors";
 import { QUOTE_LANGUAGES, useLanguage } from "@/context/language";
@@ -41,7 +42,7 @@ const SHARE_FONT = 46;
 const SHARE_LINE_H = 68;
 const SHARE_MAX_CHARS = 34;
 const SHARE_MAX_LINES = 10;
-const ARTWORK_URI = Image.resolveAssetSource(
+const ARTWORK_URI = Asset.fromModule(
   require("../../assets/images/home-peach-gurus-bg.png")
 ).uri;
 
