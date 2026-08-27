@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Svg, { Path, Circle, Ellipse } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 import Colors from "@/constants/colors";
 import { useQuotes } from "@/hooks/useWordPress";
 import { InlineLoading } from "@/components/LoadingStates";
@@ -20,37 +20,6 @@ import type { Post } from "@/services/wordpress";
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
 
 const BANNER_WIDTH = Math.min(Dimensions.get("window").width - 88, 300);
-
-/** Subtle mandala pattern behind the hero, like the reference */
-function MandalaBackdrop() {
-  const petals = Array.from({ length: 12 }, (_, i) => i * 30);
-  return (
-    <Svg
-      width={380}
-      height={380}
-      viewBox="0 0 200 200"
-      style={styles.mandala}
-      pointerEvents="none"
-    >
-      <Circle cx={100} cy={100} r={96} stroke="rgba(255,255,255,0.28)" strokeWidth={0.8} fill="none" />
-      <Circle cx={100} cy={100} r={72} stroke="rgba(255,255,255,0.22)" strokeWidth={0.8} fill="none" />
-      <Circle cx={100} cy={100} r={48} stroke="rgba(255,255,255,0.18)" strokeWidth={0.8} fill="none" />
-      {petals.map((angle) => (
-        <Ellipse
-          key={angle}
-          cx={100}
-          cy={52}
-          rx={9}
-          ry={24}
-          stroke="rgba(255,255,255,0.2)"
-          strokeWidth={0.8}
-          fill="none"
-          transform={`rotate(${angle} 100 100)`}
-        />
-      ))}
-    </Svg>
-  );
-}
 
 export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
@@ -86,16 +55,10 @@ export default function HomeScreen() {
       locations={[0, 0.55, 1]}
       style={styles.container}
     >
-      {/* Glow, mandala pattern and bokeh lights behind the content */}
+      {/* Soft light glow behind the banner, like the reference */}
       <View style={styles.glowWrap} pointerEvents="none">
-        <MandalaBackdrop />
         <View style={styles.glowCircle} />
         <View style={styles.glowCircleSmall} />
-        <View style={styles.bokeh1} />
-        <View style={styles.bokeh2} />
-        <View style={styles.bokeh3} />
-        <View style={styles.bokeh4} />
-        <View style={styles.bokeh5} />
       </View>
 
       <ScrollView
@@ -132,11 +95,6 @@ export default function HomeScreen() {
                     ? "— Sushumna Kriya Yoga Foundation"
                     : "— Pujya Guru Mahavatar Babaji"}
                 </Text>
-                <View style={styles.quoteDivider}>
-                  <View style={styles.quoteDividerLine} />
-                  <View style={styles.quoteDividerDot} />
-                  <View style={styles.quoteDividerLine} />
-                </View>
               </>
             )}
           </View>
@@ -197,57 +155,6 @@ const styles = StyleSheet.create({
     borderRadius: 130,
     backgroundColor: "rgba(255, 214, 160, 0.35)",
   },
-  mandala: {
-    position: "absolute",
-    top: 10,
-    alignSelf: "center",
-    opacity: 0.6,
-  },
-  bokeh1: {
-    position: "absolute",
-    top: 330,
-    left: 26,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: "rgba(255, 226, 178, 0.5)",
-  },
-  bokeh2: {
-    position: "absolute",
-    top: 470,
-    right: 30,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "rgba(255, 236, 198, 0.45)",
-  },
-  bokeh3: {
-    position: "absolute",
-    top: 560,
-    left: 58,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: "rgba(255, 240, 210, 0.55)",
-  },
-  bokeh4: {
-    position: "absolute",
-    top: 640,
-    right: 62,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(255, 230, 185, 0.4)",
-  },
-  bokeh5: {
-    position: "absolute",
-    top: 250,
-    right: 48,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: "rgba(255, 244, 218, 0.6)",
-  },
   heroSection: {
     alignItems: "center",
   },
@@ -286,7 +193,7 @@ const styles = StyleSheet.create({
     marginTop: 36,
   },
   quoteCard: {
-    backgroundColor: "rgba(255, 254, 250, 0.92)",
+    backgroundColor: "#FFFEFA",
     borderRadius: 24,
     paddingVertical: 28,
     paddingHorizontal: 24,
@@ -304,9 +211,9 @@ const styles = StyleSheet.create({
   },
   quoteIconText: {
     fontSize: 56,
-    color: "#C9921B",
+    color: Colors.light.primaryLight,
     fontWeight: "700" as const,
-    opacity: 0.55,
+    opacity: 0.4,
     lineHeight: 64,
   },
   quoteText: {
@@ -321,24 +228,6 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
     textAlign: "center",
     fontWeight: "600" as const,
-  },
-  quoteDivider: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 16,
-  },
-  quoteDividerLine: {
-    width: 38,
-    height: 1.5,
-    backgroundColor: "rgba(201, 146, 27, 0.4)",
-  },
-  quoteDividerDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "rgba(201, 146, 27, 0.7)",
-    marginHorizontal: 8,
   },
   guideWrap: {
     marginTop: 56,
