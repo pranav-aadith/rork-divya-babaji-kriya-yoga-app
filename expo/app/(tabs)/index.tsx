@@ -19,18 +19,14 @@ import Svg, {
   LinearGradient as SvgLinearGradient,
   Image as SvgImage,
 } from "react-native-svg";
-import { Facebook, Instagram, Youtube, Heart, Share2 } from "lucide-react-native";
-import * as Haptics from "expo-haptics";
+import { Facebook, Instagram, Youtube, Share2 } from "lucide-react-native";
 import { Asset } from "expo-asset";
 import { File, Paths } from "expo-file-system";
 import Colors from "@/constants/colors";
-import { QUOTE_LANGUAGES, useLanguage } from "@/context/language";
-import { useFavorites } from "@/context/favorites";
 import { useQuotes } from "@/hooks/useWordPress";
 import { useQuoteText } from "@/hooks/useQuoteText";
-import { detectLanguage, type LanguageFilter } from "@/utils/language";
 import { InlineLoading } from "@/components/LoadingStates";
-import type { Post } from "@/services/wordpress";
+import { CATEGORY_IDS, type Post } from "@/services/wordpress";
 
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
 const PEACH = "#F6D2B0";
@@ -132,8 +128,6 @@ function SocialIcon({ id, color }: { id: string; color: string }) {
 export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
 
-  const { preferredLanguage, setPreferredLanguage } = useLanguage();
-  const { isFavorite, toggleFavorite } = useFavorites();
   const { data: quotesData, isLoading: quotesLoading } = useQuotes(100);
 
   const [isSharing, setIsSharing] = useState(false);
@@ -147,38 +141,24 @@ export default function HomeScreen() {
     }).start();
   }, [fadeAnim]);
 
-  const quotesWithLanguage = useMemo(() => {
-    if (!quotesData) return [];
-    return quotesData.map((post) => ({
-      post,
-      language: detectLanguage(
-        `${post.title} ${post.excerpt}`.slice(0, 200),
-        post.categories
+  /** Daily quote pool: English quotes only on the home screen. */
+  const englishPool: Post[] = useMemo(
+    () =>
+      (quotesData ?? []).filter((post) =>
+        post.categoryIds.includes(CATEGORY_IDS.quoteEnglish)
       ),
-    }));
-  }, [quotesData]);
-
-  const languagePool = useMemo(() => {
-    if (preferredLanguage !== "all") {
-      const filtered = quotesWithLanguage.filter(
-        (q) => q.language === preferredLanguage
-      );
-      if (filtered.length > 0) return filtered;
-    }
-    return quotesWithLanguage;
-  }, [quotesWithLanguage, preferredLanguage]);
+    [quotesData]
+  );
 
   /** Quote of the day: deterministic per date, so it changes every midnight. */
   const currentQuote: Post | undefined = useMemo(() => {
-    if (languagePool.length === 0) return undefined;
+    if (englishPool.length === 0) return undefined;
     const now = new Date();
     const dayOfYear = Math.floor(
       (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000
     );
-    return languagePool[dayOfYear % languagePool.length].post;
-  }, [languagePool]);
-
-  const isFav = currentQuote ? isFavorite(currentQuote.id) : false;
+    return englishPool[dayOfYear % englishPool.length];
+  }, [englishPool]);
 
   // Quote posts are greeting-card images — the text is read from the image
   // with a vision model; fall back to the post title while loading / on error.
@@ -197,12 +177,6 @@ export default function HomeScreen() {
     () => Math.max(480, 1080 - (quoteLines.length - 1) * SHARE_LINE_H),
     [quoteLines]
   );
-
-  const onToggleFavorite = () => {
-    if (!currentQuote) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    toggleFavorite({ id: currentQuote.id, title: quoteDisplay });
-  };
 
   /** Render the quote over the artwork to a PNG and open the share sheet. */
   const shareQuoteImage = async () => {
@@ -248,32 +222,6 @@ export default function HomeScreen() {
       />
 
       <View style={styles.overlay} pointerEvents="box-none">
-        <View style={styles.langRow}>
-          {QUOTE_LANGUAGES.map((lang) => {
-            const isSelected = preferredLanguage === lang.code;
-            return (
-              <TouchableOpacity
-                key={lang.code}
-                style={[styles.langChip, isSelected && styles.langChipActive]}
-                activeOpacity={0.8}
-                accessibilityRole="button"
-                accessibilityLabel={`Show quotes in ${lang.label}`}
-                accessibilityState={{ selected: isSelected }}
-                onPress={() => setPreferredLanguage(lang.code)}
-              >
-                <Text
-                  style={[
-                    styles.langChipText,
-                    isSelected && styles.langChipTextActive,
-                  ]}
-                >
-                  {lang.label}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
         <Animated.View style={[styles.quoteSection, { opacity: fadeAnim }]}>
           <View style={styles.quoteCard}>
             <View style={styles.quoteIcon}>
@@ -291,24 +239,6 @@ export default function HomeScreen() {
                 </Text>
                 {currentQuote ? (
                   <View style={styles.quoteActions}>
-                    <TouchableOpacity
-                      style={styles.quoteAction}
-                      activeOpacity={0.8}
-                      accessibilityRole="button"
-                      accessibilityLabel={
-                        isFav ? "Remove from favorites" : "Save to favorites"
-                      }
-                      onPress={onToggleFavorite}
-                    >
-                      <Heart
-                        size={18}
-                        color={isFav ? "#E05555" : "#7A5B3E"}
-                        fill={isFav ? "#E05555" : "none"}
-                      />
-                      <Text style={styles.quoteActionText}>
-                        {isFav ? "Saved" : "Save"}
-                      </Text>
-                    </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.quoteAction}
                       activeOpacity={0.8}
@@ -342,7 +272,7 @@ export default function HomeScreen() {
             onPress={openWhatsApp}
           >
             <View style={styles.guideIconWrap}>
-              <Svg width={20} height={20} viewBox="0 0 24 24" fill="#fff">
+              <Svg width={16} height={16} viewBox="0 0 24 24" fill="#fff">
                 <Path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
               </Svg>
             </View>
@@ -452,33 +382,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 16,
   },
-  langRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 14,
-  },
-  langChip: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-    backgroundColor: "#FDF3E2",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.8)",
-  },
-  langChipActive: {
-    backgroundColor: Colors.light.primary,
-    borderColor: Colors.light.primary,
-  },
-  langChipText: {
-    fontSize: 12,
-    fontWeight: "600" as const,
-    color: "#7A5B3E",
-  },
-  langChipTextActive: {
-    color: "#fff",
-  },
   quoteSection: {
     marginBottom: 18,
   },
@@ -551,10 +454,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FDF3E2",
-    borderRadius: 32,
-    paddingVertical: 10,
-    paddingLeft: 10,
-    paddingRight: 26,
+    borderRadius: 24,
+    paddingVertical: 7,
+    paddingLeft: 7,
+    paddingRight: 18,
     shadowColor: "#7A3B12",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.18,
@@ -564,16 +467,16 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 255, 255, 0.7)",
   },
   guideIconWrap: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#25D366",
   },
   guideText: {
-    marginLeft: 12,
-    fontSize: 16,
+    marginLeft: 8,
+    fontSize: 13,
     fontWeight: "700" as const,
     color: "#5B4632",
   },

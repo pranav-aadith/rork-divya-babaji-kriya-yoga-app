@@ -9,8 +9,10 @@ import {
   Dimensions,
 } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
-import { Clock } from "lucide-react-native";
+import { Clock, Heart } from "lucide-react-native";
+import * as Haptics from "expo-haptics";
 import Colors from "@/constants/colors";
+import { useFavorites } from "@/context/favorites";
 import { usePosts, useQuotes } from "@/hooks/useWordPress";
 import { apiErrorMessage, CATEGORY_IDS } from "@/services/wordpress";
 import { LoadingState, ErrorState, EmptyState } from "@/components/LoadingStates";
@@ -39,6 +41,7 @@ interface PostWithLanguage extends Post {
 
 export default function WisdomCategoryScreen() {
   const router = useRouter();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const { id, name, slug, lang } = useLocalSearchParams<{
     id?: string;
     name?: string;
@@ -235,23 +238,49 @@ export default function WisdomCategoryScreen() {
         {isQuotes ? (
           /* Quotes: render as a grid of image-based greeting cards */
           <View style={styles.quoteGrid}>
-            {displayedPosts.map((quote) => (
-              <TouchableOpacity
-                key={quote.id}
-                style={styles.quoteCard}
-                onPress={() => router.push(`/article/${quote.id}`)}
-                activeOpacity={0.95}
-              >
-                <Image
-                  source={{ uri: getQuoteImage(quote) }}
-                  style={styles.quoteImage}
-                  resizeMode="cover"
-                />
-                <Text style={styles.quoteTitle} numberOfLines={1}>
-                  {quote.title}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {displayedPosts.map((quote) => {
+              const isQuoteFavorite = isFavorite(quote.id);
+              return (
+                <View key={quote.id} style={styles.quoteCard}>
+                  <TouchableOpacity
+                    style={styles.quoteCardTouchable}
+                    onPress={() => router.push(`/article/${quote.id}`)}
+                    activeOpacity={0.95}
+                  >
+                    <Image
+                      source={{ uri: getQuoteImage(quote) }}
+                      style={styles.quoteImage}
+                      resizeMode="cover"
+                    />
+                    <Text style={styles.quoteTitle} numberOfLines={1}>
+                      {quote.title}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.quoteHeart}
+                    activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                      isQuoteFavorite
+                        ? "Remove from favorites"
+                        : "Save to favorites"
+                    }
+                    onPress={() => {
+                      Haptics.impactAsync(
+                        Haptics.ImpactFeedbackStyle.Light
+                      ).catch(() => {});
+                      toggleFavorite({ id: quote.id, title: quote.title });
+                    }}
+                  >
+                    <Heart
+                      size={16}
+                      color={isQuoteFavorite ? "#E05555" : "#7A5B3E"}
+                      fill={isQuoteFavorite ? "#E05555" : "none"}
+                    />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
           </View>
         ) : (
           <>
@@ -495,6 +524,25 @@ const styles = StyleSheet.create({
   },
   quoteCard: {
     width: QUOTE_CARD_WIDTH,
+  },
+  quoteCardTouchable: {
+    width: "100%",
+  },
+  quoteHeart: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(255, 254, 250, 0.92)",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+    elevation: 3,
   },
   quoteImage: {
     width: "100%",
