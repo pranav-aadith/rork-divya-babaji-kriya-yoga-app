@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,9 @@ import {
 import Svg, { Path } from "react-native-svg";
 import { Facebook, Instagram, Youtube } from "lucide-react-native";
 import Colors from "@/constants/colors";
+import { QUOTE_LANGUAGES, useLanguage } from "@/context/language";
 import { useQuotes } from "@/hooks/useWordPress";
+import { detectLanguage, type LanguageFilter } from "@/utils/language";
 import { InlineLoading } from "@/components/LoadingStates";
 import type { Post } from "@/services/wordpress";
 
@@ -78,9 +80,8 @@ function SocialIcon({ id, color }: { id: string; color: string }) {
 export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
 
-  const { data: quotesData, isLoading: quotesLoading } = useQuotes(5);
-
-  const [quoteIndex, setQuoteIndex] = useState(0);
+  const { preferredLanguage, setPreferredLanguage } = useLanguage();
+  const { data: quotesData, isLoading: quotesLoading } = useQuotes(100);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -90,13 +91,36 @@ export default function HomeScreen() {
     }).start();
   }, [fadeAnim]);
 
-  useEffect(() => {
-    if (quotesData && quotesData.length > 0) {
-      setQuoteIndex(Math.floor(Math.random() * quotesData.length));
-    }
+  const quotesWithLanguage = useMemo(() => {
+    if (!quotesData) return [];
+    return quotesData.map((post) => ({
+      post,
+      language: detectLanguage(
+        `${post.title} ${post.excerpt}`.slice(0, 200),
+        post.categories
+      ),
+    }));
   }, [quotesData]);
 
-  const currentQuote: Post | undefined = quotesData?.[quoteIndex];
+  const languagePool = useMemo(() => {
+    if (preferredLanguage !== "all") {
+      const filtered = quotesWithLanguage.filter(
+        (q) => q.language === preferredLanguage
+      );
+      if (filtered.length > 0) return filtered;
+    }
+    return quotesWithLanguage;
+  }, [quotesWithLanguage, preferredLanguage]);
+
+  /** Quote of the day: deterministic per date, so it changes every midnight. */
+  const currentQuote: Post | undefined = useMemo(() => {
+    if (languagePool.length === 0) return undefined;
+    const now = new Date();
+    const dayOfYear = Math.floor(
+      (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000
+    );
+    return languagePool[dayOfYear % languagePool.length].post;
+  }, [languagePool]);
 
   const openWhatsApp = () => {
     Linking.openURL(WHATSAPP_URL).catch(() => {});
@@ -116,6 +140,32 @@ export default function HomeScreen() {
       />
 
       <View style={styles.overlay} pointerEvents="box-none">
+        <View style={styles.langRow}>
+          {QUOTE_LANGUAGES.map((lang) => {
+            const isSelected = preferredLanguage === lang.code;
+            return (
+              <TouchableOpacity
+                key={lang.code}
+                style={[styles.langChip, isSelected && styles.langChipActive]}
+                activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel={`Show quotes in ${lang.label}`}
+                accessibilityState={{ selected: isSelected }}
+                onPress={() => setPreferredLanguage(lang.code)}
+              >
+                <Text
+                  style={[
+                    styles.langChipText,
+                    isSelected && styles.langChipTextActive,
+                  ]}
+                >
+                  {lang.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
         <Animated.View style={[styles.quoteSection, { opacity: fadeAnim }]}>
           <View style={styles.quoteCard}>
             <View style={styles.quoteIcon}>
@@ -189,6 +239,33 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     paddingHorizontal: 24,
     paddingBottom: 16,
+  },
+  langRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 14,
+  },
+  langChip: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    backgroundColor: "#FDF3E2",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.8)",
+  },
+  langChipActive: {
+    backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
+  },
+  langChipText: {
+    fontSize: 12,
+    fontWeight: "600" as const,
+    color: "#7A5B3E",
+  },
+  langChipTextActive: {
+    color: "#fff",
   },
   quoteSection: {
     marginBottom: 18,

@@ -10,6 +10,7 @@ import { AppState, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Colors from "@/constants/colors";
+import { LanguageProvider } from "@/context/language";
 import {
   fetchCategories,
   fetchEventPosts,
@@ -187,9 +188,11 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        {isReady ? <RootLayoutNav /> : null}
-      </GestureHandlerRootView>
+      <LanguageProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          {isReady ? <RootLayoutNav /> : null}
+        </GestureHandlerRootView>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }
