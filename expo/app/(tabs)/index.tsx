@@ -19,17 +19,19 @@ import Svg, {
   LinearGradient as SvgLinearGradient,
   Image as SvgImage,
 } from "react-native-svg";
-import { Facebook, Instagram, Youtube, Share2 } from "lucide-react-native";
+import { Facebook, Instagram, Youtube, Heart, Share2 } from "lucide-react-native";
+import * as Haptics from "expo-haptics";
 import { Asset } from "expo-asset";
 import { File, Paths } from "expo-file-system";
 import Colors from "@/constants/colors";
+import { useFavorites } from "@/context/favorites";
 import { useQuotes } from "@/hooks/useWordPress";
 import { useQuoteText } from "@/hooks/useQuoteText";
 import { InlineLoading } from "@/components/LoadingStates";
 import { CATEGORY_IDS, type Post } from "@/services/wordpress";
 
 const WHATSAPP_URL = "https://api.whatsapp.com/send?phone=917337555449";
-const PEACH = "#F6D2B0";
+const FAV_COLOR = "#E05555";
 const FALLBACK_QUOTE =
   "Attaining inner peace can bring peace to the world; attaining inner harmony can bring harmony to the world; attaining inner bliss can bring glory to the entire world.";
 
@@ -129,6 +131,7 @@ export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
 
   const { data: quotesData, isLoading: quotesLoading } = useQuotes(100);
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const [isSharing, setIsSharing] = useState(false);
   const shareSvgRef = useRef<SvgHandle | null>(null);
@@ -171,6 +174,14 @@ export default function HomeScreen() {
     () => wrapQuoteLines(quoteDisplay),
     [quoteDisplay]
   );
+
+  const isFav = currentQuote ? isFavorite(currentQuote.id) : false;
+
+  const onToggleFavorite = () => {
+    if (!currentQuote) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    toggleFavorite({ id: currentQuote.id, title: quoteDisplay });
+  };
 
   /** Vertical anchor of the quote block on the share card (bottom-weighted). */
   const quoteStartY = useMemo(
@@ -215,7 +226,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Image
-        source={require("../../assets/images/home-peach-gurus-bg.png")}
+        source={require("../../assets/images/home-welcome-bg.png")}
         style={styles.art}
         resizeMode="contain"
         accessibilityIgnoresInvertColors
@@ -239,6 +250,24 @@ export default function HomeScreen() {
                 </Text>
                 {currentQuote ? (
                   <View style={styles.quoteActions}>
+                    <TouchableOpacity
+                      style={styles.quoteAction}
+                      activeOpacity={0.8}
+                      accessibilityRole="button"
+                      accessibilityLabel={
+                        isFav ? "Remove from favorites" : "Save to favorites"
+                      }
+                      onPress={onToggleFavorite}
+                    >
+                      <Heart
+                        size={18}
+                        color={isFav ? FAV_COLOR : "#7A5B3E"}
+                        fill={isFav ? FAV_COLOR : "none"}
+                      />
+                      <Text style={styles.quoteActionText}>
+                        {isFav ? "Saved" : "Save"}
+                      </Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.quoteAction}
                       activeOpacity={0.8}
@@ -369,7 +398,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: PEACH,
+    backgroundColor: "#FFFFFF",
   },
   art: {
     ...StyleSheet.absoluteFillObject,
