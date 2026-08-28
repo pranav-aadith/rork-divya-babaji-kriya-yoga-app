@@ -265,10 +265,19 @@ function extractTags(post: WPPost): string[] {
   return tags;
 }
 
+/** Extract the first <img src> from post content HTML */
+function extractContentImage(content: string): string | null {
+  return content.match(/<img[^>]+src=["']([^"']+)["']/i)?.[1] ?? null;
+}
+
 /** Normalize a WP post for app display */
 function normalizePost(post: WPPost): Post {
   const images = extractImage(post);
   const cats = extractCategories(post);
+  // Some quote posts have no featured media — the greeting-card image
+  // only exists inside the content HTML, so use it as a fallback.
+  const contentImage =
+    images.full ?? extractContentImage(post.content?.rendered ?? "");
   const authorName = post._embedded?.author?.[0]?.name ?? "Foundation";
   return {
     id: post.id,
@@ -278,8 +287,8 @@ function normalizePost(post: WPPost): Post {
     date: post.date,
     slug: post.slug,
     link: post.link,
-    imageUrl: images.full,
-    imageMediumUrl: images.medium,
+    imageUrl: contentImage,
+    imageMediumUrl: images.medium ?? contentImage,
     categories: cats.names,
     tags: extractTags(post),
     author: authorName,
