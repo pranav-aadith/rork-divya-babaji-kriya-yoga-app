@@ -22,6 +22,7 @@ import Svg, {
 import { Facebook, Instagram, Youtube, Heart, Share2 } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
 import { Asset } from "expo-asset";
+import { LinearGradient } from "expo-linear-gradient";
 import { File, Paths } from "expo-file-system";
 import Colors from "@/constants/colors";
 import { useFavorites } from "@/context/favorites";
@@ -225,8 +226,16 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Backdrop gradient matches the artwork's own white→peach blend so
+          the full image fits without visible letterbox bands. */}
+      <LinearGradient
+        colors={["#FFFFFF", "#FFFFFF", "#F7ECE6", "#F6D9C7"]}
+        locations={[0, 0.5, 0.75, 1]}
+        style={styles.art}
+        pointerEvents="none"
+      />
       <Image
-        source={require("../../assets/images/home-welcome-bg.png")}
+        source={require("../../assets/images/home-welcome-mountain-bg.png")}
         style={styles.art}
         resizeMode="contain"
         accessibilityIgnoresInvertColors
