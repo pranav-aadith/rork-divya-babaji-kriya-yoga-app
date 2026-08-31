@@ -129,10 +129,6 @@ export default function WisdomScreen() {
       router.push("/wisdom/music");
       return;
     }
-    if (category.slug === "sadhak-speaks") {
-      router.push("/wisdom/sadhak-speaks");
-      return;
-    }
     const queryId = category.id ?? "articles";
     router.push(
       `/wisdom/category?id=${queryId}&name=${encodeURIComponent(
