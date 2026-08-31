@@ -231,7 +231,7 @@ export default function HomeScreen() {
       <LinearGradient
         colors={["#FFFFFF", "#FFFFFF", "#F7ECE6", "#F6D9C7"]}
         locations={[0, 0.5, 0.75, 1]}
-        style={styles.art}
+        style={styles.backdrop}
         pointerEvents="none"
       />
       <Image
@@ -409,10 +409,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
   },
-  art: {
+  backdrop: {
     ...StyleSheet.absoluteFillObject,
+  },
+  art: {
+    position: "absolute",
+    top: 0,
+    left: 0,
     width: "100%",
-    height: "100%",
+    aspectRatio: 512 / 662,
   },
   overlay: {
     flex: 1,
@@ -421,14 +426,14 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   quoteSection: {
-    marginBottom: 18,
+    marginBottom: 14,
   },
   quoteCard: {
     backgroundColor: "#FFFEFA",
     borderRadius: 24,
-    paddingVertical: 22,
+    paddingVertical: 18,
     paddingHorizontal: 22,
-    paddingTop: 30,
+    paddingTop: 24,
     shadowColor: "#7A3B12",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
@@ -464,7 +469,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: 28,
-    marginTop: 16,
+    marginTop: 12,
   },
   quoteAction: {
     flexDirection: "row",
