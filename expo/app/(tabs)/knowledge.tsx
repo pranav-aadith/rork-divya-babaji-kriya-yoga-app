@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Sparkles } from "lucide-react-native";
 import Colors from "@/constants/colors";
@@ -73,6 +74,7 @@ const WISDOM_CATEGORIES = [
 
 export default function WisdomScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const {
     data: categories,
     isLoading,
@@ -157,7 +159,7 @@ export default function WisdomScreen() {
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <View style={styles.headerIcon}>
           <Sparkles size={28} color={Colors.light.primary} />
         </View>

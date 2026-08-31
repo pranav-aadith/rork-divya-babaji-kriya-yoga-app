@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Clock, ChevronRight } from "lucide-react-native";
@@ -38,6 +39,7 @@ function getProgramCardImage(program: Page) {
 
 export default function ProgramsScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { data: programs, isLoading, isError, error, refetch } = useProgramPages();
 
   if (isLoading) {
@@ -64,7 +66,7 @@ export default function ProgramsScreen() {
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>Programs</Text>
         <Text style={styles.headerSubtitle}>
           Transform your life through the ancient science of Kriya Yoga

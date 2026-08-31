@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Calendar, Clock, MapPin, Video } from "lucide-react-native";
@@ -25,6 +26,7 @@ const typeFilters = ["All", "Online", "In-Person"];
 
 export default function EventsScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [activeTimeFilter, setActiveTimeFilter] = useState("Upcoming");
   const [activeTypeFilter, setActiveTypeFilter] = useState("All");
 
@@ -99,7 +101,7 @@ export default function EventsScreen() {
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <Text style={styles.headerTitle}>Events</Text>
         <Text style={styles.headerSubtitle}>
           Gatherings and sessions from the Foundation
