@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: 26,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginBottom: 8,
     lineHeight: 32,
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 22,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 6,
   },
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   },
   accordionTitle: {
     fontSize: 17,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.primary,
   },
   accordionBody: {
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     fontSize: 15,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
   },
   secondaryButton: {
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     fontSize: 14,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.primary,
   },
   buttonGroup: {
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
   },
   initiationLanguage: {
     fontSize: 18,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.primary,
     marginBottom: 4,
   },
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
   },
   supportTitle: {
     fontSize: 18,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 4,
   },
@@ -536,7 +536,7 @@ const styles = StyleSheet.create({
   },
   supportLanguage: {
     fontSize: 15,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 8,
   },
@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
   },
   phoneChipText: {
     fontSize: 14,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.primary,
   },
 });

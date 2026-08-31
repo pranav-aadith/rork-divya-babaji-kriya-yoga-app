@@ -160,12 +160,12 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 12,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: "#fff",
   },
   title: {
     fontSize: 28,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     lineHeight: 36,
     marginBottom: 16,

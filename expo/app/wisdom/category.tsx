@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: "800" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 4,
   },
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   },
   filterChipText: {
     fontSize: 14,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
   },
   filterChipTextActive: {
@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
   },
   featuredTitle: {
     fontSize: 22,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginBottom: 8,
   },
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     paddingHorizontal: 20,
     marginBottom: 16,
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
   },
   articleTitle: {
     fontSize: 16,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 6,
     lineHeight: 22,
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
   },
   quoteTitle: {
     fontSize: 13,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginTop: 8,
     marginBottom: 4,

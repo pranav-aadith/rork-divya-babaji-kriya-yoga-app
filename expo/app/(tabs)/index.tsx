@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
   quoteIconText: {
     fontSize: 52,
     color: Colors.light.primaryLight,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     opacity: 0.4,
     lineHeight: 60,
   },
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.light.primary,
     textAlign: "center",
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
   },
   quoteActions: {
     flexDirection: "row",
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
   },
   quoteActionText: {
     fontSize: 13,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: "#7A5B3E",
   },
   shareCard: {
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
   guideText: {
     marginLeft: 8,
     fontSize: 13,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#5B4632",
   },
   socialRow: {

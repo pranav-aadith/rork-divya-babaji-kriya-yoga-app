@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: "800" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 8,
   },
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   programTitle: {
     fontSize: 24,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginBottom: 4,
   },
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   learnMoreText: {
     fontSize: 14,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.primaryLight,
   },
   emptyText: {
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   },
   ctaTitle: {
     fontSize: 22,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     textAlign: "center",
     marginBottom: 8,

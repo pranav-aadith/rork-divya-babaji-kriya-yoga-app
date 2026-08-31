@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: "800" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 4,
   },
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   filterChipText: {
     fontSize: 14,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
   },
   filterChipTextActive: {
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 17,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     lineHeight: 24,
     marginBottom: 6,
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   },
   cardMetaText: {
     fontSize: 14,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.primary,
   },
   bottomPadding: {

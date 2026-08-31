@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: "800" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 4,
   },
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginBottom: 6,
     textShadowColor: "rgba(0,0,0,0.3)",

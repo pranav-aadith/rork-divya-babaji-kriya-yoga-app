@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: "800" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 4,
     lineHeight: 36,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 17,
     color: Colors.light.primary,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     lineHeight: 26,
   },
   section: {
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 16,
   },
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   tileLanguage: {
     fontSize: 16,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 4,
   },

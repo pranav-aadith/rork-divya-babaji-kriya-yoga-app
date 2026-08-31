@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   emptyTitle: {
     marginTop: 16,
     fontSize: 18,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
   },
   emptyHint: {
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   quoteIconText: {
     fontSize: 44,
     color: Colors.light.primaryLight,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     opacity: 0.4,
     lineHeight: 52,
   },
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.light.primary,
     textAlign: "center",
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
   },
   cardFooter: {
     flexDirection: "row",

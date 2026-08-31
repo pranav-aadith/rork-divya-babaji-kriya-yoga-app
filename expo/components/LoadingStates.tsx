@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   retryText: {
     fontSize: 15,
     color: Colors.light.primary,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     marginTop: 16,
   },
   emptyIcon: {

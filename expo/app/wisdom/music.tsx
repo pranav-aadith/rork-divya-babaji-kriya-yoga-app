@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: "800" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 4,
   },
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   },
   topLabel: {
     fontSize: 12,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "rgba(255,255,255,0.85)",
     letterSpacing: 2,
   },
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 18,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginBottom: 2,
   },

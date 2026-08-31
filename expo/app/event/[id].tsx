@@ -214,12 +214,12 @@ const styles = StyleSheet.create({
   },
   heroBadgeText: {
     fontSize: 12,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: "#fff",
   },
   heroTitle: {
     fontSize: 28,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
   },
   detailsSection: {
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     fontSize: 15,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
   },
   section: {
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 16,
   },

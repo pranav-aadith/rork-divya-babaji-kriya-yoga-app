@@ -49,7 +49,7 @@ function RootLayoutNav() {
         },
         headerTintColor: Colors.light.primary,
         headerTitleStyle: {
-          fontWeight: "600" as const,
+          fontWeight: "400" as const,
           color: Colors.light.text,
         },
       }}

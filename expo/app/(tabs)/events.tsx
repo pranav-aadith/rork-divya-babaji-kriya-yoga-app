@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: "800" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 8,
   },
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
   },
   timeFilterText: {
     fontSize: 14,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.textSecondary,
   },
   timeFilterTextActive: {
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
   },
   typeFilterText: {
     fontSize: 14,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.textSecondary,
   },
   typeFilterTextActive: {
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 20,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginTop: 16,
     marginBottom: 8,
@@ -473,12 +473,12 @@ const styles = StyleSheet.create({
   },
   highlightBadgeText: {
     fontSize: 12,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: "#fff",
   },
   highlightTitle: {
     fontSize: 24,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginBottom: 8,
   },
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     paddingHorizontal: 20,
     marginBottom: 16,
@@ -536,7 +536,7 @@ const styles = StyleSheet.create({
   },
   eventDateDay: {
     fontSize: 28,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
   },
   eventDateMonth: {
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
   },
   eventTypeText: {
     fontSize: 10,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.primary,
     textTransform: "uppercase",
   },
@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
   },
   eventTitle: {
     fontSize: 16,
-    fontWeight: "600" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 4,
   },
@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
   },
   subscribeTitle: {
     fontSize: 20,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginTop: 12,
     marginBottom: 8,

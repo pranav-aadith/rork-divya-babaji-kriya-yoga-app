@@ -45,7 +45,7 @@ export default function TabLayout() {
         },
         headerTitleStyle: {
           color: Colors.light.text,
-          fontWeight: "600" as const,
+          fontWeight: "400" as const,
         },
         headerShadowVisible: false,
       }}
@@ -62,6 +62,7 @@ export default function TabLayout() {
         name="programs"
         options={{
           title: "Programs",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <GraduationCap size={size} color={color} />,
         }}
       />
@@ -69,6 +70,7 @@ export default function TabLayout() {
         name="knowledge"
         options={{
           title: "Wisdom",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <Sparkles size={size} color={color} />,
         }}
       />
@@ -76,6 +78,7 @@ export default function TabLayout() {
         name="events"
         options={{
           title: "Events",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <Calendar size={size} color={color} />,
         }}
       />

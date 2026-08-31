@@ -233,7 +233,7 @@ function CollapsibleSection({
         <Text
           style={[
             styles.accordionHeaderText,
-            { fontSize, fontWeight: "700" as const, color: SPOTIFY_HEADING_COLOR },
+            { fontSize, fontWeight: "400" as const, color: SPOTIFY_HEADING_COLOR },
           ]}
           numberOfLines={2}
         >
@@ -558,7 +558,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: 28,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginBottom: 4,
   },
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     marginBottom: 16,
   },
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   staticHeading: {
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     marginBottom: 10,
     lineHeight: 26,
   },
@@ -686,7 +686,7 @@ const styles = StyleSheet.create({
   },
   batchTileHeading: {
     fontSize: 18,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: SPOTIFY_HEADING_COLOR,
     marginBottom: 8,
   },
@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
   },
   batchRegisterLink: {
     fontSize: 16,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: SPOTIFY_HEADING_COLOR,
     marginTop: 10,
     textDecorationLine: "underline",
@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
   },
   youtubeButtonText: {
     fontSize: 17,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: "#fff",
     marginBottom: 2,
   },
@@ -751,7 +751,7 @@ const styles = StyleSheet.create({
   },
   vaniSectionTitle: {
     color: SPOTIFY_HEADING_COLOR,
-    fontWeight: "800" as const,
+    fontWeight: "400" as const,
   },
   podcastGrid: {
     gap: 16,
@@ -779,7 +779,7 @@ const styles = StyleSheet.create({
   },
   podcastLabel: {
     fontSize: 15,
-    fontWeight: "700" as const,
+    fontWeight: "400" as const,
     color: Colors.light.text,
     textAlign: "center",
   },
