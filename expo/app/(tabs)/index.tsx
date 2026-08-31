@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
   guideText: {
     marginLeft: 8,
     fontSize: 13,
-    fontWeight: "400" as const,
+    fontWeight: "700" as const,
     color: "#5B4632",
   },
   socialRow: {

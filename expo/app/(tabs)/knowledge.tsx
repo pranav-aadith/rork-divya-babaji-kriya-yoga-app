@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   },
   tileTitle: {
     fontSize: 17,
-    fontWeight: "400" as const,
+    fontWeight: "700" as const,
     color: "#fff",
     marginBottom: 4,
     textShadowColor: "rgba(0,0,0,0.3)",
