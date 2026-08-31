@@ -7,9 +7,10 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Linking,
 } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
-import { Clock, Heart } from "lucide-react-native";
+import { Clock, Heart, Youtube, ChevronRight } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
 import Colors from "@/constants/colors";
 import { useFavorites } from "@/context/favorites";
@@ -28,6 +29,8 @@ import type { Post } from "@/services/wordpress";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800";
+
+const SADHAK_YOUTUBE_URL = "https://www.youtube.com/@SushumnaTheInnerMiracles";
 
 const QUOTE_GRID_GAP = 12;
 const QUOTE_COLUMNS = 2;
@@ -55,6 +58,7 @@ export default function WisdomCategoryScreen() {
     id && !Number.isNaN(parseInt(id, 10)) ? parseInt(id, 10) : null;
   const isArticles = categorySlug === "articles" || id === "articles";
   const isQuotes = categorySlug === "quotes";
+  const isSadhakSpeaks = categorySlug === "sadhak-speaks";
   const isTravelDiary =
     categorySlug === "himalayanam" || categorySlug === "tiruchendur";
 
@@ -200,6 +204,27 @@ export default function WisdomCategoryScreen() {
             {displayedPosts.length === 1 ? "item" : "items"}
           </Text>
         </View>
+
+        {isSadhakSpeaks ? (
+          <TouchableOpacity
+            style={styles.youtubeBanner}
+            activeOpacity={0.85}
+            accessibilityRole="link"
+            accessibilityLabel="Open Sadhak Speaks YouTube channel"
+            onPress={() => Linking.openURL(SADHAK_YOUTUBE_URL).catch(() => {})}
+          >
+            <View style={styles.youtubeIconWrap}>
+              <Youtube size={22} color="#fff" />
+            </View>
+            <View style={styles.youtubeTextWrap}>
+              <Text style={styles.youtubeTitle}>Watch on YouTube</Text>
+              <Text style={styles.youtubeSubtitle} numberOfLines={1}>
+                @SushumnaTheInnerMiracles
+              </Text>
+            </View>
+            <ChevronRight size={18} color="#7A5B3E" />
+          </TouchableOpacity>
+        ) : null}
 
         {showLanguageFilter && (
           <View style={styles.filterSection}>
@@ -378,6 +403,44 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 16,
     color: Colors.light.textSecondary,
+  },
+  youtubeBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 20,
+    marginBottom: 20,
+    padding: 12,
+    borderRadius: 16,
+    backgroundColor: "#FDF3E2",
+    borderWidth: 1,
+    borderColor: "rgba(230, 33, 23, 0.15)",
+    shadowColor: "#7A3B12",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  youtubeIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#E62117",
+  },
+  youtubeTextWrap: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  youtubeTitle: {
+    fontSize: 15,
+    fontWeight: "400" as const,
+    color: Colors.light.text,
+  },
+  youtubeSubtitle: {
+    fontSize: 13,
+    color: Colors.light.textSecondary,
+    marginTop: 2,
   },
   filterSection: {
     marginBottom: 20,
