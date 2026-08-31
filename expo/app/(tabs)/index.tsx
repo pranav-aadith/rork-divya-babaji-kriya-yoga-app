@@ -424,15 +424,14 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   quoteCard: {
-    // Translucent so the artwork shows through instead of being blocked
-    backgroundColor: "rgba(255, 254, 250, 0.78)",
+    backgroundColor: "#FFFEFA",
     borderRadius: 24,
     paddingVertical: 22,
     paddingHorizontal: 22,
     paddingTop: 30,
     shadowColor: "#7A3B12",
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.12,
     shadowRadius: 16,
     elevation: 6,
   },
