@@ -7,21 +7,15 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  Linking,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { Sparkles, Play } from "lucide-react-native";
+import { Sparkles } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useCategories } from "@/hooks/useWordPress";
 import { apiErrorMessage, CATEGORY_IDS } from "@/services/wordpress";
 import { LoadingState, ErrorState } from "@/components/LoadingStates";
 import type { WPCategory } from "@/services/wordpress";
-
-/** Sadhak Speaks stories live on the Foundation's YouTube channel. */
-const SADHAK_YOUTUBE_URL =
-  "https://www.youtube.com/@SushumnaTheInnerMiracles";
-const YOUTUBE_RED = "#E62117";
 
 const { width } = Dimensions.get("window");
 const TILE_GAP = 12;
@@ -119,10 +113,6 @@ export default function WisdomScreen() {
   };
 
   const handleCategoryPress = (category: (typeof WISDOM_CATEGORIES)[number]) => {
-    if (category.slug === "sadhak-speaks") {
-      Linking.openURL(SADHAK_YOUTUBE_URL).catch(() => {});
-      return;
-    }
     if (category.slug === "books") {
       router.push("/wisdom/books");
       return;
@@ -182,7 +172,6 @@ export default function WisdomScreen() {
       <View style={styles.grid}>
         {WISDOM_CATEGORIES.map((category) => {
           const count = getPostCount(category);
-          const isYouTubeTile = category.slug === "sadhak-speaks";
           return (
             <TouchableOpacity
               key={category.slug}
@@ -198,28 +187,12 @@ export default function WisdomScreen() {
                 }
                 style={styles.tileImage}
               />
-              <View
-                style={
-                  isYouTubeTile ? [styles.tileOverlay, styles.ytTileOverlay] : styles.tileOverlay
-                }
-              />
-              {isYouTubeTile ? (
-                <View style={styles.ytBadge}>
-                  <Play size={18} color="#fff" fill="#fff" />
-                </View>
-              ) : null}
+              <View style={styles.tileOverlay} />
               <View style={styles.tileContent}>
                 <Text style={styles.tileTitle}>{category.name}</Text>
-                {isYouTubeTile ? (
-                  <View style={styles.ytPill}>
-                    <Play size={11} color="#fff" fill="#fff" />
-                    <Text style={styles.ytPillText}>Watch on YouTube</Text>
-                  </View>
-                ) : (
-                  <Text style={styles.tileCount}>
-                    {count === undefined ? "Listen" : count > 0 ? `${count} items` : "Explore"}
-                  </Text>
-                )}
+                <Text style={styles.tileCount}>
+                  {count === undefined ? "Listen" : count > 0 ? `${count} items` : "Explore"}
+                </Text>
               </View>
             </TouchableOpacity>
           );
@@ -292,40 +265,6 @@ const styles = StyleSheet.create({
   tileOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(45, 42, 38, 0.45)",
-  },
-  ytTileOverlay: {
-    backgroundColor: "rgba(30, 20, 16, 0.55)",
-  },
-  ytBadge: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: YOUTUBE_RED,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: YOUTUBE_RED,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.45,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  ytPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 5,
-    backgroundColor: YOUTUBE_RED,
-    paddingVertical: 4,
-    paddingHorizontal: 9,
-    borderRadius: 12,
-  },
-  ytPillText: {
-    fontSize: 11,
-    fontWeight: "500" as const,
-    color: "#fff",
   },
   tileImageContain: {
     backgroundColor: Colors.light.cardBackground,
