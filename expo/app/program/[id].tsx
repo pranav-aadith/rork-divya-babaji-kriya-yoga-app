@@ -120,9 +120,9 @@ const BATCH_NAME_PATTERNS = [
 /** Headings/paragraphs with glued schedule fields ("Age : … Schedule : … Time : …") */
 const SCHEDULE_FIELD_PATTERN = /\b(age|schedule|time|language)\s*:/i;
 
-/** Pure time-range lines: "6:15 AM -6:30 AM IST", "8:30 PM -8:45PM PT", "7 PM -7:30 PM IST" */
+/** Pure time-range lines: "6:15 AM -6:30 AM IST", "6:15-6:30 AM IST", "7-7:30 PM IST", "12:15-1PM IST" */
 const TIME_RANGE_PATTERN =
-  /^\d{1,2}(:\d{2})?\s*[ap]\.?m\.?\s*[-–—]\s*\d{1,2}(:\d{2})?\s*[ap]\.?m\.?\s*(ist|pt|et|est|aest)?$/i;
+  /^\d{1,2}(:\d{2})?\s*([ap]\.?m\.?)?\s*[-–—]\s*\d{1,2}(:\d{2})?\s*[ap]\.?m\.?\s*(ist|pt|et|est|aest)?$/i;
 
 /** Filter out noise blocks (Spotify, duplicate labels, schedule info lines, batch names, URLs) */
 function filterNoiseBlocks(blocks: ContentBlock[]): ContentBlock[] {
