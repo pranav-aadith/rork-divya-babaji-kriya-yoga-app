@@ -132,6 +132,13 @@ function RootLayoutNav() {
           presentation: "modal",
         }}
       />
+      <Stack.Screen
+        name="settings/[doc]"
+        options={{
+          title: "Settings",
+          presentation: "card",
+        }}
+      />
       <Stack.Screen name="+not-found" options={{ title: "Not Found" }} />
     </Stack>
   );
