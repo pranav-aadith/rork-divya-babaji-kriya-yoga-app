@@ -19,7 +19,9 @@ import Svg, {
   LinearGradient as SvgLinearGradient,
   Image as SvgImage,
 } from "react-native-svg";
-import { Facebook, Instagram, Youtube, Heart, Share2 } from "lucide-react-native";
+import { Facebook, Instagram, Youtube, Heart, Share2, Settings } from "lucide-react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Asset } from "expo-asset";
 import { LinearGradient } from "expo-linear-gradient";
@@ -130,6 +132,8 @@ function SocialIcon({ id, color }: { id: string; color: string }) {
 
 export default function HomeScreen() {
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const { data: quotesData, isLoading: quotesLoading } = useQuotes(100);
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -240,6 +244,16 @@ export default function HomeScreen() {
         resizeMode="contain"
         accessibilityIgnoresInvertColors
       />
+
+      <TouchableOpacity
+        style={[styles.settingsButton, { top: insets.top + 8 }]}
+        activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel="Open settings"
+        onPress={() => router.push("/settings")}
+      >
+        <Settings size={17} color="#7A5B3E" />
+      </TouchableOpacity>
 
       <View style={styles.overlay} pointerEvents="box-none">
         <Animated.View style={[styles.quoteSection, { opacity: fadeAnim }]}>
@@ -422,6 +436,21 @@ const styles = StyleSheet.create({
     left: 0,
     width: "100%",
     aspectRatio: 512 / 663,
+  },
+  settingsButton: {
+    position: "absolute",
+    right: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,254,250,0.92)",
+    shadowColor: "#7A3B12",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+    elevation: 3,
   },
   overlay: {
     flex: 1,
