@@ -132,13 +132,6 @@ function RootLayoutNav() {
           presentation: "modal",
         }}
       />
-      <Stack.Screen
-        name="settings/legal"
-        options={{
-          title: "Legal",
-          presentation: "card",
-        }}
-      />
       <Stack.Screen name="+not-found" options={{ title: "Not Found" }} />
     </Stack>
   );

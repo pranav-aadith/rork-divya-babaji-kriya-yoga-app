@@ -4,23 +4,22 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Linking,
   ScrollView,
 } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { ShieldCheck, FileText, ChevronRight } from "lucide-react-native";
 import Colors from "@/constants/colors";
 
-const PRIVACY_SLUG = "privacy-policy";
-const TERMS_SLUG = "terms-of-service";
+const PRIVACY_URL = "https://divyababajikriyayoga.org/privacy-policy/";
+const TERMS_URL = "https://divyababajikriyayoga.org/terms-of-service/";
 const APP_VERSION = "1";
 
+function openUrl(url: string) {
+  Linking.openURL(url).catch(() => {});
+}
+
 export default function SettingsScreen() {
-  const router = useRouter();
-
-  const openLegal = (slug: string, title: string) => {
-    router.push(`/settings/legal?slug=${slug}&title=${encodeURIComponent(title)}`);
-  };
-
   return (
     <>
       <Stack.Screen options={{ title: "Settings" }} />
@@ -34,9 +33,9 @@ export default function SettingsScreen() {
           <TouchableOpacity
             style={styles.row}
             activeOpacity={0.7}
-            accessibilityRole="button"
+            accessibilityRole="link"
             accessibilityLabel="Open Privacy Policy"
-            onPress={() => openLegal(PRIVACY_SLUG, "Privacy Policy")}
+            onPress={() => openUrl(PRIVACY_URL)}
           >
             <View style={styles.rowIcon}>
               <ShieldCheck size={18} color={Colors.light.primary} />
@@ -48,9 +47,9 @@ export default function SettingsScreen() {
           <TouchableOpacity
             style={styles.row}
             activeOpacity={0.7}
-            accessibilityRole="button"
+            accessibilityRole="link"
             accessibilityLabel="Open Terms of Service"
-            onPress={() => openLegal(TERMS_SLUG, "Terms of Service")}
+            onPress={() => openUrl(TERMS_URL)}
           >
             <View style={styles.rowIcon}>
               <FileText size={18} color={Colors.light.primary} />
