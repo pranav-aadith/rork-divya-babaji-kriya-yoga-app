@@ -1,12 +1,12 @@
 import { Tabs } from "expo-router";
 import { Sparkles, GraduationCap, Calendar, Heart } from "lucide-react-native";
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, type ColorValue } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 import Colors from "@/constants/colors";
 
-function LotusIcon({ size, color }: { size: number; color: string }) {
+function LotusIcon({ size, color }: { size: number; color: ColorValue }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
       <Path d="M12 3.2c-1.9 2.5-2.8 5.3-2.4 8 .3 1.7 1.1 2.9 2.4 3.7 1.3-.8 2.1-2 2.4-3.7.4-2.7-.5-5.5-2.4-8z" />

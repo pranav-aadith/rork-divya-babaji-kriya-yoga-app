@@ -297,7 +297,13 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   playOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...{
+      position: "absolute" as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.25)",

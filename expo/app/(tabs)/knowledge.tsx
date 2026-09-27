@@ -263,7 +263,11 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   tileOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute" as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: "rgba(45, 42, 38, 0.45)",
   },
   tileImageContain: {
