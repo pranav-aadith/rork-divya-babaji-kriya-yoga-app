@@ -235,7 +235,7 @@ export default function HomeScreen() {
         pointerEvents="none"
       />
       <Image
-        source={require("../../assets/images/home-welcome-mountain-bg.png")}
+        source={require("../../assets/images/home-welcome-foundation.png")}
         style={styles.art}
         resizeMode="contain"
         accessibilityIgnoresInvertColors
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: "100%",
-    aspectRatio: 512 / 662,
+    aspectRatio: 512 / 663,
   },
   overlay: {
     flex: 1,
