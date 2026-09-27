@@ -246,7 +246,7 @@ export default function HomeScreen() {
       />
 
       <TouchableOpacity
-        style={[styles.settingsButton, { top: insets.top + 8 }]}
+        style={[styles.settingsButton, { top: insets.top + 2 }]}
         activeOpacity={0.8}
         accessibilityRole="button"
         accessibilityLabel="Open settings"
