@@ -136,7 +136,8 @@ function RootLayoutNav() {
         name="settings/[doc]"
         options={{
           title: "Settings",
-          presentation: "card",
+          presentation: "fullScreenModal",
+          animation: "slide_from_bottom",
         }}
       />
       <Stack.Screen name="+not-found" options={{ title: "Not Found" }} />
