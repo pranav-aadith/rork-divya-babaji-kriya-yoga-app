@@ -28,17 +28,17 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: GOLD,
         tabBarInactiveTintColor: BROWN,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarStyle: {
           backgroundColor: "#FBF3E2",
           borderTopColor: "rgba(201, 146, 27, 0.18)",
-          paddingTop: 8,
-          height: Platform.OS === "ios" ? 76 : 60,
+          paddingTop: 6,
+          height: Platform.OS === "ios" ? 84 : 68,
         },
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: "500" as const,
-          marginTop: 4,
+          marginTop: 2,
         },
         headerStyle: {
           backgroundColor: Colors.light.background,

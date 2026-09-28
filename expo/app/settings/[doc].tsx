@@ -1,83 +1,56 @@
-import React, { useMemo } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import React from "react";
+import { Text, StyleSheet, ScrollView } from "react-native";
 import { useLocalSearchParams, Stack } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
 import Colors from "@/constants/colors";
-import { fetchPageBySlug } from "@/services/wordpress";
-import { htmlToBlocks, type ContentBlock } from "@/utils/html";
-import { LoadingState, ErrorState } from "@/components/LoadingStates";
+import { LEGAL_DOCUMENTS, type LegalDocument } from "@/constants/legal";
 
-/** Legal documents that can be opened from the Settings screen. */
-const DOCS: Record<string, { title: string }> = {
-  "privacy-policy": { title: "Privacy Policy" },
-  "terms-of-service": { title: "Terms of Service" },
-};
-
-function LegalBlocks({ blocks }: { blocks: ContentBlock[] }) {
+/** Render the sections of a bundled legal document. */
+function LegalBody({ doc }: { doc: LegalDocument }) {
   return (
     <>
-      {blocks.map((block, index) =>
-        block.type === "heading" ? (
-          <Text key={index} style={[styles.heading, block.level <= 2 && styles.headingLarge]}>
-            {block.text}
-          </Text>
-        ) : (
-          <Text key={index} style={styles.paragraph}>
-            {block.text}
-          </Text>
-        )
-      )}
+      {doc.intro.map((paragraph, index) => (
+        <Text key={`intro-${index}`} style={styles.paragraph}>
+          {paragraph}
+        </Text>
+      ))}
+      {doc.sections.map((section) => (
+        <React.Fragment key={section.heading}>
+          <Text style={styles.heading}>{section.heading}</Text>
+          {section.paragraphs.map((paragraph, index) => (
+            <Text key={`${section.heading}-${index}`} style={styles.paragraph}>
+              {paragraph}
+            </Text>
+          ))}
+        </React.Fragment>
+      ))}
     </>
   );
 }
 
 export default function LegalDocumentScreen() {
   const { doc } = useLocalSearchParams<{ doc?: string }>();
-  const meta = (doc && DOCS[doc]) ?? null;
+  const legalDoc = (doc && LEGAL_DOCUMENTS[doc]) ?? null;
 
-  const pageQuery = useQuery({
-    queryKey: ["wp", "page", doc ?? ""],
-    queryFn: () => fetchPageBySlug(doc ?? ""),
-    enabled: !!meta,
-    // Legal text rarely changes; keep it cached for a month.
-    staleTime: 1000 * 60 * 60 * 24 * 30,
-    gcTime: 1000 * 60 * 60 * 24 * 30,
-  });
-
-  const blocks = useMemo(() => {
-    const content = pageQuery.data?.content;
-    if (!content) return [];
-    return htmlToBlocks(content);
-  }, [pageQuery.data]);
-
-  if (!meta) {
+  if (!legalDoc) {
     return (
       <>
         <Stack.Screen options={{ title: "Settings" }} />
-        <ErrorState message="Document not found." />
+        <Text style={styles.missingMessage}>Document not found.</Text>
       </>
     );
   }
 
   return (
     <>
-      <Stack.Screen options={{ title: meta.title }} />
+      <Stack.Screen options={{ title: legalDoc.title }} />
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>{pageQuery.data?.title ?? meta.title}</Text>
-        {pageQuery.isLoading ? (
-          <LoadingState message="Loading…" />
-        ) : pageQuery.isError || !pageQuery.data ? (
-          <ErrorState
-            message="Could not load this document. Please check your connection and try again."
-            onRetry={() => pageQuery.refetch()}
-          />
-        ) : (
-          <LegalBlocks blocks={blocks} />
-        )}
+        <Text style={styles.title}>{legalDoc.title}</Text>
+        <Text style={styles.updated}>Last updated: {legalDoc.updatedAt}</Text>
+        <LegalBody doc={legalDoc} />
       </ScrollView>
     </>
   );
@@ -96,6 +69,11 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: "400" as const,
     color: Colors.light.text,
+    marginBottom: 4,
+  },
+  updated: {
+    fontSize: 13,
+    color: Colors.light.textSecondary,
     marginBottom: 16,
   },
   heading: {
@@ -105,13 +83,15 @@ const styles = StyleSheet.create({
     marginTop: 18,
     marginBottom: 6,
   },
-  headingLarge: {
-    fontSize: 19,
-  },
   paragraph: {
     fontSize: 15,
     lineHeight: 23,
     color: Colors.light.text,
     marginBottom: 12,
+  },
+  missingMessage: {
+    marginTop: 40,
+    textAlign: "center",
+    color: Colors.light.textSecondary,
   },
 });
