@@ -307,21 +307,6 @@ export default function EventsScreen() {
         </View>
       ) : null}
 
-      <View style={styles.subscribeSection}>
-        <LinearGradient
-          colors={[Colors.light.secondary, Colors.light.secondaryLight]}
-          style={styles.subscribeCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Calendar size={32} color="#fff" />
-          <Text style={styles.subscribeTitle}>Stay Connected</Text>
-          <Text style={styles.subscribeText}>
-            New sessions are announced on our website and social channels
-          </Text>
-        </LinearGradient>
-      </View>
-
       <View style={styles.bottomPadding} />
     </ScrollView>
   );
@@ -596,26 +581,6 @@ const styles = StyleSheet.create({
   eventMetaText: {
     fontSize: 12,
     color: Colors.light.textLight,
-  },
-  subscribeSection: {
-    paddingHorizontal: 20,
-  },
-  subscribeCard: {
-    borderRadius: 24,
-    padding: 28,
-    alignItems: "center",
-  },
-  subscribeTitle: {
-    fontSize: 20,
-    fontWeight: "400" as const,
-    color: "#fff",
-    marginTop: 12,
-    marginBottom: 8,
-  },
-  subscribeText: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.85)",
-    textAlign: "center",
   },
   bottomPadding: {
     height: 20,

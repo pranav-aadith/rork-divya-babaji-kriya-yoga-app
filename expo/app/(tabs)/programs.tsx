@@ -113,18 +113,6 @@ export default function ProgramsScreen() {
         )}
       </View>
 
-      <View style={styles.ctaSection}>
-        <LinearGradient
-          colors={[Colors.light.primary, Colors.light.primaryDark]}
-          style={styles.ctaCard}
-        >
-          <Text style={styles.ctaTitle}>Not sure where to start?</Text>
-          <Text style={styles.ctaText}>
-            Explore our programs to find the perfect path for your spiritual journey.
-          </Text>
-        </LinearGradient>
-      </View>
-
       <View style={styles.bottomPadding} />
     </ScrollView>
   );
@@ -228,28 +216,6 @@ const styles = StyleSheet.create({
     color: Colors.light.textSecondary,
     textAlign: "center",
     paddingVertical: 40,
-  },
-  ctaSection: {
-    padding: 20,
-    marginTop: 12,
-  },
-  ctaCard: {
-    borderRadius: 24,
-    padding: 28,
-    alignItems: "center",
-  },
-  ctaTitle: {
-    fontSize: 22,
-    fontWeight: "400" as const,
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  ctaText: {
-    fontSize: 15,
-    color: "rgba(255,255,255,0.85)",
-    textAlign: "center",
-    lineHeight: 22,
   },
   bottomPadding: {
     height: 20,
